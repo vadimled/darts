@@ -1,5 +1,5 @@
 /**
- * Sample React Native App
+ * Sample React Native Darts
  * https://github.com/facebook/react-native
  *
  * @format
@@ -55,7 +55,7 @@ function Section({children, title}: SectionProps): JSX.Element {
   );
 }
 
-function App(): JSX.Element {
+function Darts(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -76,7 +76,7 @@ function App(): JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step Test">
+          <Section title="Step Session">
             Edit <Text style={styles.highlight}>App.tsx</Text> to change this
             screen and then come back to see your edits.
           </Section>
@@ -115,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default Darts;
