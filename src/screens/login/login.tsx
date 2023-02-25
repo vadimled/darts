@@ -1,5 +1,5 @@
 import React, {FC, ReactElement} from 'react';
-import {View} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 
 export type LoginViewProps = {
   //
@@ -7,7 +7,17 @@ export type LoginViewProps = {
 
 const Login: FC<LoginViewProps> = (props): ReactElement => {
   console.log('------------->', props);
-  return <View>Login</View>;
+  return <Text style={styles.sectionTitle}>Login</Text>;
 };
+const styles = StyleSheet.create({
+  sectionTitle: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 34,
+    fontWeight: '600',
+    color: 'red',
+  },
+});
 
 export default Login;
