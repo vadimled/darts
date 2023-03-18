@@ -22,6 +22,7 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "@babel/runtime": "^7.21.0",
+    "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/eslint-config": "^3.2.0",
     "@tsconfig/react-native": "^2.0.3",
     "@types/jest": "^29.2.1",
@@ -34,6 +35,7 @@
     "metro-react-native-babel-preset": "0.75.1",
     "prettier": "^2.8.4",
     "react-test-renderer": "18.2.0",
+    "reactotron-react-native": "^5.0.3",
     "typescript": "4.8.4"
   },
   "jest": {

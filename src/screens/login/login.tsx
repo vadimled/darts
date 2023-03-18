@@ -1,22 +1,32 @@
-import React, {FC, ReactElement} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import React, {FC} from 'react';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 export type LoginViewProps = {
   //
 };
 
-const Login: FC<LoginViewProps> = (props): ReactElement => {
-  console.log('------------->', props);
-  return <Text style={styles.sectionTitle}>Login</Text>;
+const Login: FC<LoginViewProps> = (): JSX.Element => {
+  return (
+    <TouchableOpacity style={styles.center}>
+      <Text style={styles.sectionTitle}>Login</Text>
+    </TouchableOpacity>
+  );
 };
 const styles = StyleSheet.create({
-  sectionTitle: {
-    flex: 1,
+  center: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  sectionTitle: {
+    width: 200,
+    height: 45,
     fontSize: 34,
     fontWeight: '600',
     color: 'red',
+    backgroundColor: '#ccc',
   },
 });
 
