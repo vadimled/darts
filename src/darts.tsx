@@ -1,100 +1,38 @@
-/**
- * Sample React Native Darts
- * https://github.com/facebook/react-native
- *
- * @format
- */
+/* global require */
+import React, {ReactElement} from 'react';
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {ImageBackground, StyleSheet} from 'react-native';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+if (__DEV__) {
+  import('../reactotron').then(() => console.log('Reactotron Configured'));
 }
 
-function Darts(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+import Login from '@screens/login';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+const Stack = createNativeStackNavigator();
+const Darts = (): ReactElement => {
+  const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: 'transparent',
+    },
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step Session">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <ImageBackground
+      style={styles.center}
+      source={require('../assets/background.png')}
+      resizeMode="stretch">
+      <NavigationContainer theme={MyTheme}>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Home" component={Login} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -112,6 +50,9 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+  center: {
+    flex: 1,
   },
 });
 

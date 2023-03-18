@@ -4,11 +4,11 @@
 
 import 'react-native';
 import React from 'react';
-import Darts from '../src/darts';
+import _app from '../src/_app';
 
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
 it('renders correctly', () => {
-  renderer.create(<Darts />);
+  renderer.create(<_app />);
 });
