@@ -22,7 +22,7 @@ const Darts = (): ReactElement => {
 
   return (
     <ImageBackground
-      style={styles.center}
+      style={styles.background}
       source={require('../assets/background.png')}
       resizeMode="stretch">
       <NavigationContainer theme={MyTheme}>
@@ -51,8 +51,10 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-  center: {
+  background: {
     flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
   },
 });
 
