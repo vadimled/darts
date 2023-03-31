@@ -36,7 +36,7 @@ const Login: React.FC<LoginFormProps> = () => {
         <TextInput
           style={styles.input}
           placeholder="Enter your username"
-          placeholderTextColor="#e5e5e5"
+          placeholderTextColor="rgba(229, 229, 229, 0.6)"
           value={username}
           onChangeText={handleUsernameChange}
         />
@@ -46,7 +46,7 @@ const Login: React.FC<LoginFormProps> = () => {
         <TextInput
           style={styles.input}
           placeholder="Enter your password"
-          placeholderTextColor="#e5e5e5"
+          placeholderTextColor="rgba(229, 229, 229, 0.6)"
           secureTextEntry={true}
           value={password}
           onChangeText={handlePasswordChange}
@@ -71,21 +71,21 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: 'transparent',
     marginBottom: 80,
-    marginLeft: 70,
+    marginLeft: 30,
   },
   inputContainer: {
-    width: '80%',
+    width: '90%',
     marginBottom: 10,
   },
   label: {
     color: '#fff',
     marginBottom: 5,
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '500',
   },
   input: {
     width: '100%',
-    height: 42,
+    height: 40,
     padding: 10,
     borderWidth: 1,
     borderColor: '#e5e5e5',
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   button: {
-    width: '80%',
-    height: 50,
+    width: '40%',
+    height: 40,
     backgroundColor: '#095851',
     justifyContent: 'center',
     alignItems: 'center',
