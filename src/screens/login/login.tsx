@@ -7,15 +7,15 @@ import {
   Text,
   SafeAreaView,
 } from 'react-native';
-// import {useDispatch} from 'react-redux';
-// import {login} from './authSlice';
+import {useDispatch} from 'react-redux';
+import {login} from '../../store/authSlice';
 
 interface LoginFormProps {}
 
 const Login: React.FC<LoginFormProps> = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const handleUsernameChange = (text: string) => {
     setUsername(text);
@@ -26,7 +26,7 @@ const Login: React.FC<LoginFormProps> = () => {
   };
 
   const handleLoginPress = () => {
-    // dispatch(login({username, password}));
+    dispatch(login.fulfilled); //{username, password}
   };
 
   return (
