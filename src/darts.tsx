@@ -19,7 +19,7 @@ const Darts = (): ReactElement => {
       background: 'transparent',
     },
   };
-  const backgroundImage = require('../assets/background.png');
+  const backgroundImage = require('./assets/background.png');
   return (
     <ImageBackground
       style={styles.background}
