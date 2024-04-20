@@ -19,11 +19,11 @@ const Darts = (): ReactElement => {
       background: 'transparent',
     },
   };
-
+  const backgroundImage = require('../assets/background.png');
   return (
     <ImageBackground
       style={styles.background}
-      source={require('../assets/background.png')}
+      source={backgroundImage}
       resizeMode="stretch">
       <NavigationContainer theme={MyTheme}>
         <Stack.Navigator screenOptions={{headerShown: false}}>

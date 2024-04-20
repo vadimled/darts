@@ -61,6 +61,6 @@ target 'darts' do
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.4'
           end
         end
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+   # __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end
