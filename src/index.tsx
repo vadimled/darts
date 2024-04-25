@@ -1,6 +1,4 @@
-/**
- * @format
- */
+import './ReactotronConfig';
 import React from 'react';
 import {AppRegistry} from 'react-native';
 import Darts from './darts';

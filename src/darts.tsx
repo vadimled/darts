@@ -2,11 +2,6 @@ import React, {ReactElement} from 'react';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ImageBackground, StyleSheet} from 'react-native';
-
-if (__DEV__) {
-  import('../reactotron').then(() => console.log('Reactotron Configured'));
-}
-
 import HomeScreen from '@screens/HomeScreen';
 import GameScreen from '@screens/GameScreen';
 
