@@ -1,5 +1,5 @@
 /* global require */
-import React, {ReactElement} from 'react';
+import {ReactElement} from 'react';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ImageBackground, StyleSheet} from 'react-native';
@@ -8,7 +8,16 @@ if (__DEV__) {
   import('../reactotron').then(() => console.log('Reactotron Configured'));
 }
 
-import Login from '@screens/login';
+import HomeScreen from '@screens/HomeScreen';
+
+// Socket.io setup
+const socket = io("http://your-server-address:3000"); // Change to your server's address
+
+// Types for navigation
+export type AppStackParamList = {
+  Home: undefined;
+  Game: undefined;
+};
 
 const Stack = createNativeStackNavigator();
 const Darts = (): ReactElement => {
@@ -27,7 +36,8 @@ const Darts = (): ReactElement => {
       resizeMode="stretch">
       <NavigationContainer theme={MyTheme}>
         <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name="Home" component={Login} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Game" component={GameScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ImageBackground>

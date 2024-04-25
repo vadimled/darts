@@ -21,7 +21,8 @@
     "react-native-screens": "^3.20.0",
     "react-native-web": "^0.18.12",
     "react-redux": "^8.0.5",
-    "redux": "^4.2.1"
+    "redux": "^4.2.1",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.24.1",
