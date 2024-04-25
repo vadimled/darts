@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {FC, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -12,7 +12,7 @@ import {login} from '../../store/authSlice';
 
 interface LoginFormProps {}
 
-const Login: React.FC<LoginFormProps> = () => {
+const Login: FC<LoginFormProps> = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();

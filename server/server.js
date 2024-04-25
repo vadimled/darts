@@ -12,15 +12,18 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', socket => {
-  console.log('Пользователь подключен');
+  console.log('Пользователь подключен:', socket.id);
 
-  socket.on('message', msg => {
-    console.log('Сообщение: ' + msg);
-    io.emit('message', msg); // Отправка сообщения всем подключенным пользователям
+  // Обработка получения сообщения от клиента
+  socket.on('send_message', data => {
+    console.log(`Сообщение от ${socket.id}: ${data.message}`);
+
+    // Передача сообщения всем пользователям, кроме отправителя
+    socket.broadcast.emit('receive_message', data);
   });
 
   socket.on('disconnect', () => {
-    console.log('Пользователь отключен');
+    console.log('Пользователь отключен:', socket.id);
   });
 });
 
