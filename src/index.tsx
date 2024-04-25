@@ -1,4 +1,7 @@
-import './ReactotronConfig';
+if (__DEV__) {
+  require('../ReactotronConfig');
+}
+
 import React from 'react';
 import {AppRegistry} from 'react-native';
 import Darts from './darts';
