@@ -1,5 +1,4 @@
-/* global require */
-import {ReactElement} from 'react';
+import React, {ReactElement} from 'react';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ImageBackground, StyleSheet} from 'react-native';
@@ -9,9 +8,7 @@ if (__DEV__) {
 }
 
 import HomeScreen from '@screens/HomeScreen';
-
-// Socket.io setup
-const socket = io("http://your-server-address:3000"); // Change to your server's address
+import GameScreen from '@screens/GameScreen';
 
 // Types for navigation
 export type AppStackParamList = {
