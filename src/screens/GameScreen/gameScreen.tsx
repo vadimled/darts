@@ -3,14 +3,14 @@ import {
   View,
   Text,
   TextInput,
-  Button,
-  SafeAreaView,
   StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import io from 'socket.io-client';
 
 // Assuming your server is running on this IP and port
-const socket = io('http://5.29.192.111:3000');
+const socket = io('http://192.168.1.162:3000');
 
 const GameScreen = () => {
   const [message, setMessage] = useState<string>(''); // Clearly define the type of message
@@ -37,33 +37,38 @@ const GameScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{padding: 20}}>
+    <SafeAreaView style={styles.inputContainer}>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Username</Text>
         <TextInput
-          value={message}
-          onChangeText={setMessage}
+          style={styles.input}
           placeholder="Введите имя"
-          style={{
-            height: 40,
-            borderColor: 'gray',
-            borderWidth: 1,
-            marginBottom: 10,
-          }}
+          placeholderTextColor="rgba(229, 229, 229, 0.6)"
+          /*
+          value={username}
+          onChangeText={handleUsernameChange}
+*/
         />
-        <Button title="Отправить сообщение" onPress={sendMessage} />
+      </View>
 
-        <View>
-          {receivedMessages.map((msg, index) => (
-            <Text style={{color: 'white'}} key={index}>
-              {msg}
-            </Text>
-          ))}
-        </View>
+      <TouchableOpacity style={styles.button} onPress={sendMessage}>
+        <Text style={styles.buttonText}>Отправить сообщение</Text>
+      </TouchableOpacity>
+
+      <View>
+        {receivedMessages.map((msg, index) => (
+          <Text key={index}>{msg}</Text>
+        ))}
       </View>
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -73,7 +78,7 @@ const styles = StyleSheet.create({
     marginLeft: 30,
   },
   inputContainer: {
-    width: '90%',
+    width: 'auto',
     marginBottom: 10,
   },
   label: {
@@ -115,5 +120,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
 export default GameScreen;

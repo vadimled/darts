@@ -6,6 +6,7 @@ const {Server} = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+const PORT = 3000;
 
 app.get('/', (req, res) => {
   res.send('Привет от сервера Darts!');
@@ -27,7 +28,6 @@ io.on('connection', socket => {
   });
 });
 
-const PORT = 3000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Сервер запущен на порту ${PORT}`);
 });

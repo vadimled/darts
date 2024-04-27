@@ -1,9 +1,12 @@
-import {reactotronRedux} from 'reactotron-redux';
+// ReactotronConfig.ts
 import Reactotron from 'reactotron-react-native';
+import {reactotronRedux as reduxPlugin} from 'reactotron-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-Reactotron.setAsyncStorageHandler(AsyncStorage)
-  .configure() // controls connection & communication settings
-  .useReactNative() // add all built-in react native plugins
-  .use(reactotronRedux()) // if you use Redux
-  .connect(); // let's connect!
+const reactotron = Reactotron.setAsyncStorageHandler(AsyncStorage)
+  .configure({name: 'React Native Demo', host: '192.168.1.162'}) // опционально: настройте имя и параметры
+  .useReactNative()
+  .use(reduxPlugin()) // Добавляем плагин Redux
+  .connect();
+
+export default reactotron;
