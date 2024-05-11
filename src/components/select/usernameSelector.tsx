@@ -28,8 +28,9 @@ const UsernameSelector: FC<UsernameSelectorType> = ({isVisible, onSelect}) => (
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop: 150,
   },
   modalView: {
     backgroundColor: 'white',

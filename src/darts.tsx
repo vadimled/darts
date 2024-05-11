@@ -1,9 +1,16 @@
-import React, {ReactElement} from 'react';
+import React, {ReactElement, useEffect} from 'react';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ImageBackground, StyleSheet} from 'react-native';
 import HomeScreen from '@screens/HomeScreen';
 import GameScreen from '@screens/GameScreen';
+import io from 'socket.io-client';
+import {useActions} from './store/hooks';
+import { useDispatch } from "react-redux";
+// import {trackGlobalLogs} from 'reactotron-react-native';
+
+// Подключение к сокету
+const socket = io('http://192.168.1.162:3000');
 
 // Types for navigation
 export type AppStackParamList = {
@@ -13,6 +20,25 @@ export type AppStackParamList = {
 
 const Stack = createNativeStackNavigator();
 const Darts = (): ReactElement => {
+  const {setConnectionStatus} = useActions();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    socket.on('usersCount', (data: {count: number}) => {
+      console.log('someone connected << infinite loop');
+
+      if (data.count > 1) {
+        dispatch(setConnectionStatus(true));
+      } else {
+        dispatch(setConnectionStatus(false));
+      }
+    });
+
+    return () => {
+      socket.off('usersCount');
+    };
+  }, []);
+
   const MyTheme = {
     ...DefaultTheme,
     colors: {

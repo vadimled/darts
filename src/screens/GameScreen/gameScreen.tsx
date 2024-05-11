@@ -10,13 +10,13 @@ import {
 import io from 'socket.io-client';
 
 // Assuming your server is running on this IP and port
-const socket = io('http://192.168.1.162:3000');
+// const socket = io('http://192.168.1.162:3000');
 
 const GameScreen = () => {
   const [message, setMessage] = useState<string>(''); // Clearly define the type of message
   const [receivedMessages, setReceivedMessages] = useState<string[]>([]); // Array of strings
 
-  useEffect(() => {
+  /* useEffect(() => {
     const receiveMessage = (data: {message: string}) => {
       setReceivedMessages(prevMessages => [...prevMessages, data.message]);
     };
@@ -29,10 +29,10 @@ const GameScreen = () => {
       socket.off('receive_message', receiveMessage);
     };
   }, []);
-
+*/
   const sendMessage = () => {
-    const fullMessage = `Привет, ${message}`;
-    socket.emit('send_message', {message: fullMessage});
+    // const fullMessage = `Привет, ${message}`;
+    // socket.emit('send_message', {message: fullMessage});
     setMessage('');
   };
 

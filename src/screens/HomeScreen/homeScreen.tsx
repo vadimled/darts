@@ -3,10 +3,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../store';
 import {Text, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-
 import {AppStackParamList} from '../../darts';
 import {setUsername} from '../../store/userSlice';
 import UsernameSelector from '@components/select/usernameSelector';
+import {useAppSelector} from '../../store/hooks';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   AppStackParamList,
@@ -18,9 +18,13 @@ interface HomeScreenProps {
 }
 
 const HomeScreen: FC<HomeScreenProps> = ({navigation}) => {
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState<boolean>(true);
+
   const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.user.username);
+  const isSomeoneConnected = useAppSelector(
+    state => state.socket.isSomeoneConnected,
+  );
 
   const handleSelectUsername = (name: string) => {
     dispatch(setUsername(name));
@@ -29,16 +33,18 @@ const HomeScreen: FC<HomeScreenProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.label}>Selected Username: {username}</Text>
       <UsernameSelector
         isVisible={modalVisible}
         onSelect={handleSelectUsername}
       />
+      <Text style={styles.label}>Selected Username: {username}</Text>
 
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate('Game')}>
-        <Text style={styles.buttonText}>Start Game</Text>
+        <Text style={styles.buttonText}>
+          {isSomeoneConnected ? 'Join to Game' : 'Start Game'}
+        </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -48,9 +54,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     backgroundColor: 'transparent',
-    marginLeft: 30,
+    marginTop: 350,
   },
   label: {
     color: '#fff',
@@ -81,4 +87,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
 export default HomeScreen;
