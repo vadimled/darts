@@ -1,44 +1,19 @@
-import React, {ReactElement, useEffect} from 'react';
-import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
+import React, {ReactElement} from 'react';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ImageBackground, StyleSheet} from 'react-native';
-import HomeScreen from '@screens/HomeScreen';
-import GameScreen from '@screens/GameScreen';
-import io from 'socket.io-client';
-import {useActions} from './store/hooks';
-import { useDispatch } from "react-redux";
-// import {trackGlobalLogs} from 'reactotron-react-native';
-
-// Подключение к сокету
-const socket = io('http://192.168.1.162:3000');
+import DrawerNavigator from '@components/drawerNavigator/drawerNavigator';
 
 // Types for navigation
 export type AppStackParamList = {
   Home: undefined;
   Game: undefined;
+  Drawer: undefined; // Добавляем Drawer как тип
 };
 
 const Stack = createNativeStackNavigator();
+
 const Darts = (): ReactElement => {
-  const {setConnectionStatus} = useActions();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    socket.on('usersCount', (data: {count: number}) => {
-      console.log('someone connected << infinite loop');
-
-      if (data.count > 1) {
-        dispatch(setConnectionStatus(true));
-      } else {
-        dispatch(setConnectionStatus(false));
-      }
-    });
-
-    return () => {
-      socket.off('usersCount');
-    };
-  }, []);
-
   const MyTheme = {
     ...DefaultTheme,
     colors: {
@@ -47,6 +22,7 @@ const Darts = (): ReactElement => {
     },
   };
   const backgroundImage = require('./assets/background.png');
+
   return (
     <ImageBackground
       style={styles.background}
@@ -54,8 +30,11 @@ const Darts = (): ReactElement => {
       resizeMode="stretch">
       <NavigationContainer theme={MyTheme}>
         <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Game" component={GameScreen} />
+          <Stack.Screen
+            name="Drawer"
+            component={DrawerNavigator}
+            options={{title: 'Menu'}}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </ImageBackground>

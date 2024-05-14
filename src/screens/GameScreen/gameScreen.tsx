@@ -8,28 +8,30 @@ import {
   SafeAreaView,
 } from 'react-native';
 import io from 'socket.io-client';
+import {useActions} from '../../store/hooks';
+import {useDispatch} from 'react-redux';
 
 // Assuming your server is running on this IP and port
-// const socket = io('http://192.168.1.162:3000');
+const socket = io('http://192.168.1.162:3000');
 
 const GameScreen = () => {
   const [message, setMessage] = useState<string>(''); // Clearly define the type of message
   const [receivedMessages, setReceivedMessages] = useState<string[]>([]); // Array of strings
+  const {setConnectionStatus} = useActions();
+  const dispatch = useDispatch();
 
-  /* useEffect(() => {
-    const receiveMessage = (data: {message: string}) => {
-      setReceivedMessages(prevMessages => [...prevMessages, data.message]);
-    };
+  useEffect(() => {
+    socket.on('usersCount', data => {
+      const {socket: sc, count} = data;
+      console.log('someone connected', sc, count);
+      dispatch(setConnectionStatus(count > 1));
+    });
 
-    // Subscribe to the receive_message event
-    socket.on('receive_message', receiveMessage);
-
-    // Cleanup function
     return () => {
-      socket.off('receive_message', receiveMessage);
+      socket.off('usersCount');
     };
-  }, []);
-*/
+  }, [dispatch, setConnectionStatus]);
+
   const sendMessage = () => {
     // const fullMessage = `Привет, ${message}`;
     // socket.emit('send_message', {message: fullMessage});

@@ -24,7 +24,10 @@ io.on('connection', socket => {
   console.log('Пользователи:', connectedUsers);
 
   // Сообщаем всем клиентам о изменении числа подключенных пользователей
-  socket.broadcast.emit('usersCount', {count: connectedUsers.size});
+  socket.broadcast.emit('usersCount', {
+    count: connectedUsers.size,
+    socket,
+  });
 
   // Обработка получения сообщения от клиента
   socket.on('send_message', data => {
