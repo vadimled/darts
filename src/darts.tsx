@@ -11,7 +11,7 @@ export type AppStackParamList = {
   Drawer: undefined; // Добавляем Drawer как тип
 };
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const Darts = (): ReactElement => {
   const MyTheme = {
