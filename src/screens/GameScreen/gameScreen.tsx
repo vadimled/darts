@@ -8,7 +8,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import io from 'socket.io-client';
-import {useActions} from '../../store/hooks';
+import {useActions, useAppSelector} from '../../store/hooks';
 import {useDispatch} from 'react-redux';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackParamList} from '../../darts';
@@ -30,6 +30,9 @@ const GameScreen: FC<GameScreenProps> = () => {
   const [receivedMessages, setReceivedMessages] = useState<string[]>([]); // Array of strings
   const {setConnectionStatus} = useActions();
   const dispatch = useDispatch();
+  const isSomeoneConnected = useAppSelector(
+    state => state.socket.isSomeoneConnected,
+  );
 
   useEffect(() => {
     socket.on('usersCount', data => {

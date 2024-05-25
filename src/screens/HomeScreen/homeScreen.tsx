@@ -6,7 +6,6 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackParamList} from '../../darts';
 import {setUsername} from '../../store/userSlice';
 import UsernameSelector from '@components/select/usernameSelector';
-import {useAppSelector} from '../../store/hooks';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   AppStackParamList,
@@ -17,15 +16,11 @@ interface HomeScreenProps {
   navigation: HomeScreenNavigationProp;
 }
 
-const HomeScreen: FC<HomeScreenProps> = ({navigation}) => {
+const HomeScreen: FC<HomeScreenProps> = ({}) => {
   const [modalVisible, setModalVisible] = useState<boolean>(true);
 
   const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.user.username);
-  const isSomeoneConnected = useAppSelector(
-    state => state.socket.isSomeoneConnected,
-  );
-
   const handleSelectUsername = (name: string) => {
     dispatch(setUsername(name));
     setModalVisible(false);
