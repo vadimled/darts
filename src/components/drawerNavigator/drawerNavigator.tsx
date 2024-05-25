@@ -1,7 +1,8 @@
 import React, {FC} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import GameScreen from '@screens/GameScreen';
-import TrainingScreen from "@screens/TrainingScreen";
+import TrainingScreen from '@screens/TrainingScreen';
+import HomeScreen from '@screens/HomeScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -19,6 +20,7 @@ const DrawerNavigator: FC = () => {
         drawerInactiveTintColor: 'gray',
         drawerItemStyle: {marginVertical: 5},
       }}>
+      <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen
         name="Game"
         component={GameScreen}
