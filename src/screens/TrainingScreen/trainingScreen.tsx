@@ -1,4 +1,4 @@
-import React, {useState, useEffect, FC} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,47 +7,13 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import io from 'socket.io-client';
 import {useActions} from '../../store/hooks';
 import {useDispatch} from 'react-redux';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackParamList} from '../../darts';
 
-// Assuming your server is running on this IP and port
-const socket = io('http://192.168.1.162:3000');
-
-type GameScreenNavigationProp = NativeStackNavigationProp<
-  AppStackParamList,
-  'Game'
->;
-
-interface GameScreenProps {
-  navigation: GameScreenNavigationProp;
-}
-
-const GameScreen: FC<GameScreenProps> = () => {
-  const [message, setMessage] = useState<string>(''); // Clearly define the type of message
+const TrainingScreen = () => {
   const [receivedMessages, setReceivedMessages] = useState<string[]>([]); // Array of strings
   const {setConnectionStatus} = useActions();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    socket.on('usersCount', data => {
-      const {socket: sc, count} = data;
-      console.log('someone connected', sc, count);
-      dispatch(setConnectionStatus(count > 1));
-    });
-
-    return () => {
-      socket.off('usersCount');
-    };
-  }, [dispatch, setConnectionStatus]);
-
-  const sendMessage = () => {
-    // const fullMessage = `Привет, ${message}`;
-    // socket.emit('send_message', {message: fullMessage});
-    setMessage('');
-  };
 
   return (
     <SafeAreaView style={styles.inputContainer}>
@@ -64,7 +30,7 @@ const GameScreen: FC<GameScreenProps> = () => {
         />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={sendMessage}>
+      <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Отправить сообщение</Text>
       </TouchableOpacity>
 
@@ -73,15 +39,6 @@ const GameScreen: FC<GameScreenProps> = () => {
           <Text key={index}>{msg}</Text>
         ))}
       </View>
-      {/*
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Game')}>
-        <Text style={styles.buttonText}>
-          {isSomeoneConnected ? 'Join to Game' : 'Start Game'}
-        </Text>
-      </TouchableOpacity>
-*/}
     </SafeAreaView>
   );
 };
@@ -142,4 +99,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-export default GameScreen;
+export default TrainingScreen;

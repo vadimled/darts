@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import GameScreen from '@screens/GameScreen';
-import HomeScreen from '@screens/HomeScreen';
+import TrainingScreen from "@screens/TrainingScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -26,7 +26,7 @@ const DrawerNavigator: FC = () => {
       />
       <Drawer.Screen
         name="Training"
-        component={HomeScreen}
+        component={TrainingScreen}
         options={{title: 'Training'}}
       />
     </Drawer.Navigator>

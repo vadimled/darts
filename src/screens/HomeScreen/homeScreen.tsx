@@ -38,14 +38,6 @@ const HomeScreen: FC<HomeScreenProps> = ({navigation}) => {
         onSelect={handleSelectUsername}
       />
       <Text style={styles.label}>Selected Username: {username}</Text>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Game')}>
-        <Text style={styles.buttonText}>
-          {isSomeoneConnected ? 'Join to Game' : 'Start Game'}
-        </Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };

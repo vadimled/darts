@@ -3,6 +3,7 @@ import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ImageBackground, StyleSheet} from 'react-native';
 import DrawerNavigator from '@components/drawerNavigator/drawerNavigator';
+import HomeScreen from "@screens/HomeScreen";
 
 // Types for navigation
 export type AppStackParamList = {
@@ -30,6 +31,7 @@ const Darts = (): ReactElement => {
       resizeMode="stretch">
       <NavigationContainer theme={MyTheme}>
         <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen
             name="Drawer"
             component={DrawerNavigator}
