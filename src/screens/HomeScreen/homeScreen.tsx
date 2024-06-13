@@ -1,7 +1,7 @@
 import React, {FC, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../store';
-import {Text, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, SafeAreaView} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackParamList} from '../../darts';
 import {setUsername} from '../../store/userSlice';

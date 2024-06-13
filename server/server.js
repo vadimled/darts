@@ -26,7 +26,6 @@ io.on('connection', socket => {
   // Сообщаем всем клиентам о изменении числа подключенных пользователей
   socket.broadcast.emit('usersCount', {
     count: connectedUsers.size,
-    socket,
   });
 
   // Обработка получения сообщения от клиента
@@ -40,6 +39,9 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     console.log('Пользователь отключен:', socket.id);
     connectedUsers.delete(socket.id);
+    socket.broadcast.emit('usersCount', {
+      count: connectedUsers.size,
+    });
   });
 });
 

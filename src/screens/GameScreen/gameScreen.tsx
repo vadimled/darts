@@ -1,148 +1,185 @@
-import React, {useState, useEffect, FC} from 'react';
+// GameScreen.tsx
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   TextInput,
+  Button,
   StyleSheet,
-  TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import io from 'socket.io-client';
-import {useActions, useAppSelector} from '../../store/hooks';
-import {useDispatch} from 'react-redux';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackParamList} from '../../darts';
+import io, {Socket} from 'socket.io-client';
+import {DefaultEventsMap} from '@socket.io/component-emitter';
 
-// Assuming your server is running on this IP and port
-const socket = io('http://192.168.1.162:3000');
+// Определяем тип состояния для сокета
+type SocketState = Socket<DefaultEventsMap, DefaultEventsMap> | null;
 
-type GameScreenNavigationProp = NativeStackNavigationProp<
-  AppStackParamList,
-  'Game'
->;
-
-interface GameScreenProps {
-  navigation: GameScreenNavigationProp;
-}
-
-const GameScreen: FC<GameScreenProps> = () => {
-  const [message, setMessage] = useState<string>(''); // Clearly define the type of message
-  const [receivedMessages, setReceivedMessages] = useState<string[]>([]); // Array of strings
-  const {setConnectionStatus} = useActions();
-  const dispatch = useDispatch();
-  const isSomeoneConnected = useAppSelector(
-    state => state.socket.isSomeoneConnected,
-  );
+const GameScreen = () => {
+  const [scoreVanGerwen, setScoreVanGerwen] = useState(308);
+  const [scoreWright, setScoreWright] = useState(361);
+  const [legsVanGerwen, setLegsVanGerwen] = useState(9);
+  const [legsWright, setLegsWright] = useState(10);
+  const [currentPlayer, setCurrentPlayer] = useState('van GERWEN');
+  const [inputValue, setInputValue] = useState('');
+  const [socket, setSocket] = useState<SocketState>(null);
 
   useEffect(() => {
-    socket.on('usersCount', data => {
-      const {socket: sc, count} = data;
-      console.log('someone connected', sc, count);
-      dispatch(setConnectionStatus(count > 1));
+    const newSocket = io('http://192.168.1.162:3000'); // Замените URL на ваш сервер
+    setSocket(newSocket);
+
+    newSocket.on('connect', () => {
+      console.log('Подключен к сокет серверу:', newSocket.id);
+    });
+
+    newSocket.on('disconnect', () => {
+      console.log('Отключен от сокет сервера');
+    });
+
+    newSocket.on('receive_message', data => {
+      console.log(`Получено сообщение: ${data.message}`);
     });
 
     return () => {
-      socket.off('usersCount');
+      newSocket.disconnect();
+      console.log('Сокет отключен при размонтировании компонента');
     };
-  }, [dispatch, setConnectionStatus]);
+  }, []);
 
-  const sendMessage = () => {
-    // const fullMessage = `Привет, ${message}`;
-    // socket.emit('send_message', {message: fullMessage});
-    setMessage('');
+  const handleSend = () => {
+    const value = parseInt(inputValue, 10);
+    if (isNaN(value)) {
+      return;
+    }
+
+    if (currentPlayer === 'van GERWEN') {
+      setScoreVanGerwen(scoreVanGerwen - value);
+      setCurrentPlayer('WRIGHT');
+    } else {
+      setScoreWright(scoreWright - value);
+      setCurrentPlayer('van GERWEN');
+    }
+
+    setInputValue('');
+
+    // Отправка данных через сокет
+    socket?.emit('send_message', {
+      message: `Player ${currentPlayer} scored ${value}`,
+    });
   };
 
   return (
-    <SafeAreaView style={styles.inputContainer}>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Username</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.title}>2017 PREMIER LEAGUE FINAL</Text>
+        <View style={styles.table}>
+          <View style={[styles.row, styles.headerRow]}>
+            <Text style={styles.headerCell}>FIRST TO 11</Text>
+            <Text style={styles.headerCell}>LEGS</Text>
+          </View>
+          <View style={styles.row}>
+            <Text
+              style={[
+                styles.cell,
+                styles.playerName,
+                currentPlayer === 'van GERWEN' && styles.activePlayer,
+              ]}>
+              van GERWEN
+            </Text>
+            <Text style={[styles.cell, styles.score]}>{legsVanGerwen}</Text>
+            <Text style={[styles.cell, styles.score]}>{scoreVanGerwen}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text
+              style={[
+                styles.cell,
+                styles.playerName,
+                currentPlayer === 'WRIGHT' && styles.activePlayer,
+              ]}>
+              WRIGHT
+            </Text>
+            <Text style={[styles.cell, styles.score]}>{legsWright}</Text>
+            <Text style={[styles.cell, styles.score]}>{scoreWright}</Text>
+          </View>
+        </View>
         <TextInput
           style={styles.input}
-          placeholder="Введите имя"
-          placeholderTextColor="rgba(229, 229, 229, 0.6)"
-          /*
-          value={username}
-          onChangeText={handleUsernameChange}
-*/
+          value={inputValue}
+          onChangeText={setInputValue}
+          keyboardType="numeric"
+          placeholder="Введите очки"
         />
+        <Button title="Send" onPress={handleSend} />
       </View>
-
-      <TouchableOpacity style={styles.button} onPress={sendMessage}>
-        <Text style={styles.buttonText}>Отправить сообщение</Text>
-      </TouchableOpacity>
-
-      <View>
-        {receivedMessages.map((msg, index) => (
-          <Text key={index}>{msg}</Text>
-        ))}
-      </View>
-      {/*
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Game')}>
-        <Text style={styles.buttonText}>
-          {isSomeoneConnected ? 'Join to Game' : 'Start Game'}
-        </Text>
-      </TouchableOpacity>
-*/}
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
-  background: {
+  safeArea: {
     flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
+    backgroundColor: '#fff',
   },
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-start',
-    backgroundColor: 'transparent',
-    marginBottom: 80,
-    marginLeft: 30,
+    padding: 16,
+    backgroundColor: '#000',
   },
-  inputContainer: {
-    width: 'auto',
-    marginBottom: 10,
-  },
-  label: {
-    color: '#fff',
-    marginBottom: 5,
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#e5e5e5',
-    borderRadius: 5,
-    backgroundColor: '#095851',
-    color: '#fff',
-  },
-  button: {
-    width: '40%',
-    height: 40,
-    backgroundColor: '#095851',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    marginTop: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  buttonText: {
-    color: '#fff',
+  title: {
     fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#fff',
+    marginBottom: 16,
+  },
+  table: {
+    borderWidth: 1,
+    borderColor: '#fff',
+    marginBottom: 16,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#333',
+  },
+  headerRow: {
+    backgroundColor: '#111',
+  },
+  cell: {
+    flex: 1,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#fff',
+    textAlign: 'center',
+    color: '#fff',
+  },
+  headerCell: {
+    flex: 1,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#fff',
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  playerName: {
+    textAlign: 'left',
+  },
+  score: {
+    backgroundColor: '#b22222',
+    color: '#fff',
+  },
+  activePlayer: {
+    color: 'red',
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 16,
+    paddingHorizontal: 8,
+    color: '#fff',
+    backgroundColor: '#333',
   },
 });
+
 export default GameScreen;
