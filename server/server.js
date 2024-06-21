@@ -39,9 +39,7 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     console.log('Пользователь отключен:', socket.id);
     connectedUsers.delete(socket.id);
-    socket.broadcast.emit('usersCount', {
-      count: connectedUsers.size,
-    });
+    socket.broadcast.emit('usersCount', connectedUsers.size);
   });
 });
 

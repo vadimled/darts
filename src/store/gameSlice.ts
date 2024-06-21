@@ -16,10 +16,10 @@ const gameSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setPlayer1: (state, action: PayloadAction<string>) => {
+    setPlayer1: (state, action: PayloadAction<string | undefined>) => {
       state.player1 = action.payload;
     },
-    setPlayer2: (state, action: PayloadAction<string>) => {
+    setPlayer2: (state, action: PayloadAction<string | undefined>) => {
       state.player2 = action.payload;
     },
     clearPlayers: state => {

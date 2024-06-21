@@ -44,7 +44,7 @@ const GameScreen = () => {
       console.log('Отключен от сокет сервера');
     });
 
-    newSocket?.emit('send_name', {
+    newSocket.emit('send_name', {
       name: player1,
     });
 
@@ -72,6 +72,12 @@ const GameScreen = () => {
       name: player1,
     });
   }, [dispatch, player2, socket]);
+
+  useEffect(() => {
+    if (playersCount === 1) {
+      dispatch(setPlayer2(undefined));
+    }
+  }, [playersCount]);
 
   // socket?.on('game_state', state => {
   //   setScorePlayer1(state.scorePlayer1);
