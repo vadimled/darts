@@ -4,7 +4,7 @@ import {RootState} from '../../store';
 import {Text, StyleSheet, SafeAreaView} from 'react-native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackParamList} from '../../darts';
-import {setUsername} from '../../store/userSlice';
+import {setPlayer1} from '../../store/gameSlice';
 import UsernameSelector from '@components/select/usernameSelector';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
@@ -20,9 +20,9 @@ const HomeScreen: FC<HomeScreenProps> = ({}) => {
   const [modalVisible, setModalVisible] = useState<boolean>(true);
 
   const dispatch = useDispatch();
-  const username = useSelector((state: RootState) => state.user.username);
+  const username = useSelector((state: RootState) => state.user.player1);
   const handleSelectUsername = (name: string) => {
-    dispatch(setUsername(name));
+    dispatch(setPlayer1(name));
     setModalVisible(false);
   };
 

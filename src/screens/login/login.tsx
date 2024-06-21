@@ -13,12 +13,12 @@ import {login} from '../../store/authSlice';
 interface LoginFormProps {}
 
 const Login: FC<LoginFormProps> = () => {
-  const [username, setUsername] = useState('');
+  const [username, setPlayer1] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
 
   const handleUsernameChange = (text: string) => {
-    setUsername(text);
+    setPlayer1(text);
   };
 
   const handlePasswordChange = (text: string) => {

@@ -29,11 +29,11 @@ io.on('connection', socket => {
   });
 
   // Обработка получения сообщения от клиента
-  socket.on('send_message', data => {
-    console.log(`Сообщение от ${socket.id}: ${data.message}`);
+  socket.on('send_name', secondPlayerName => {
+    console.log(`Сообщение от ${socket.id}: ${secondPlayerName.name}`);
 
     // Передача сообщения всем пользователям, кроме отправителя
-    socket.broadcast.emit('receive_message', data);
+    socket.broadcast.emit('receive_name', secondPlayerName.name);
   });
 
   socket.on('disconnect', () => {

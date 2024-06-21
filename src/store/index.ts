@@ -1,6 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {authSliceReducer} from './authSlice';
-import {userSliceReducer} from './userSlice';
+import {userSliceReducer} from './gameSlice';
 import {setupListeners} from '@reduxjs/toolkit/query';
 import reactotron from '../../ReactotronConfig';
 import {socketSliceReducer} from './socketSlice';
