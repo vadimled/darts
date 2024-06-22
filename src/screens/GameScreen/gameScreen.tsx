@@ -32,27 +32,29 @@ const GameScreen = () => {
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
   const [inputValue, setInputValue] = useState('');
 
-  socket?.on('usersCount', count => {
-
-    // @ts-ignore
-    setPlayersCount(console.log(`usersCount(setPlayersCount)=${count}`) || count);
-    setGameStatus(playersCount === 2 ? true : false);
-    console.log(`usersCount=${count}, playersCount: ${playersCount}, isGameBeLaunched: ${isGameBeLaunched}`);
-  });
-
   useEffect(() => {
     const newSocket = io('http://192.168.1.162:3000');
 
     newSocket.on('connect', () => {
       console.log('Подключен к сокет серверу:', newSocket.id);
+      newSocket.emit('send_name', {name: player1});
     });
 
     newSocket.on('disconnect', () => {
       console.log('Отключен от сокет сервера');
     });
 
-    newSocket.emit('send_name', {
-      name: player1,
+    newSocket.on('usersCount', count => {
+      setPlayersCount(count);
+      setGameStatus(count === 2);
+    });
+
+    newSocket.on('receive_name', namePlayer2 => {
+      dispatch(setPlayer2(namePlayer2));
+    });
+
+    newSocket.on('max_users', message => {
+      console.log('Достигнуто максимальное количество подключенных игроков');
     });
 
     setSocket(newSocket);
@@ -61,25 +63,19 @@ const GameScreen = () => {
       newSocket.disconnect();
       console.log('Сокет отключен при размонтировании компонента');
     };
-  }, []);
+  }, [dispatch, player1]);
 
   useEffect(() => {
-    socket?.on('receive_name', namePlayer2 => {
-      dispatch(setPlayer2(namePlayer2));
-    });
-
-    socket?.emit('send_name', {
-      name: player1,
-    });
-  }, [dispatch, player2, socket]);
+    if (socket) {
+      socket.emit('send_name', {name: player1});
+    }
+  }, [socket, player1]);
 
   useEffect(() => {
     if (playersCount === 1) {
       dispatch(setPlayer2(undefined));
       setGameStatus(false);
     }
-    // console.log(`playersCount: ${playersCount}, isGameBeLaunched: ${isGameBeLaunched}`);
-
   }, [dispatch, playersCount]);
 
   const handleSend = () => {
@@ -94,15 +90,13 @@ const GameScreen = () => {
 
     if (currentPlayer === player1) {
       newScorePlayer1 -= value;
-      newCurrentPlayer = 'Vadim';
     } else {
       newScorePlayer2 -= value;
-      newCurrentPlayer = 'Ilya';
     }
 
     setScorePlayer1(newScorePlayer1);
     setScorePlayer2(newScorePlayer2);
-    setCurrentPlayer(newCurrentPlayer);
+    // setCurrentPlayer(newCurrentPlayer);
     setInputValue('');
 
     const newState = {

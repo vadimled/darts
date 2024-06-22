@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const http = require('http');
 const {Server} = require('socket.io');
@@ -14,7 +13,11 @@ app.get('/', (req, res) => {
 });
 
 io.use((socket, next) => {
-  console.log(`socket connected: ${socket.connected}`);
+  if (connectedUsers.size >= 2) {
+    console.log('Maximum number of users connected');
+    socket.emit('max_users', 'Maximum number of users connected');
+    return socket.disconnect();
+  }
   next();
 });
 
@@ -23,21 +26,17 @@ io.on('connection', socket => {
   console.log('Пользователь подключен:', socket.id);
   console.log('Пользователи:', connectedUsers);
 
-  // Сообщаем всем клиентам о изменении числа подключенных пользователей
-  socket.broadcast.emit('usersCount', connectedUsers.size);
+  io.emit('usersCount', connectedUsers.size);
 
-  // Обработка получения сообщения от клиента
   socket.on('send_name', secondPlayerName => {
     console.log(`Сообщение от ${socket.id}: ${secondPlayerName.name}`);
-
-    // Передача сообщения всем пользователям, кроме отправителя
     socket.broadcast.emit('receive_name', secondPlayerName.name);
   });
 
   socket.on('disconnect', () => {
     console.log('Пользователь отключен:', socket.id);
     connectedUsers.delete(socket.id);
-    socket.broadcast.emit('usersCount', connectedUsers.size);
+    io.emit('usersCount', connectedUsers.size);
   });
 });
 
