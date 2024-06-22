@@ -6,7 +6,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const PORT = 3000;
-const connectedUsers = new Set(); // Используем Set для хранения уникальных ID подключенных пользователей
+const connectedUsers = new Set();
+const userNames = {}; // Используем объект для хранения имен пользователей по их сокет ID
 
 app.get('/', (req, res) => {
   res.send('Привет от сервера Darts!');
@@ -22,21 +23,25 @@ io.use((socket, next) => {
 });
 
 io.on('connection', socket => {
-  connectedUsers.add(socket.id); // Добавляем пользователя при подключении
+  connectedUsers.add(socket.id);
   console.log('Пользователь подключен:', socket.id);
   console.log('Пользователи:', connectedUsers);
 
   io.emit('usersCount', connectedUsers.size);
 
-  socket.on('send_name', secondPlayerName => {
-    console.log(`Сообщение от ${socket.id}: ${secondPlayerName.name}`);
-    socket.broadcast.emit('receive_name', secondPlayerName.name);
+  socket.on('send_name', ({name}) => {
+    console.log(`Сообщение от ${socket.id}: ${name}`);
+    userNames[socket.id] = name;
+    socket.broadcast.emit('receive_name', name);
+    io.emit('all_user_names', userNames);
   });
 
   socket.on('disconnect', () => {
     console.log('Пользователь отключен:', socket.id);
     connectedUsers.delete(socket.id);
+    delete userNames[socket.id];
     io.emit('usersCount', connectedUsers.size);
+    io.emit('all_user_names', userNames);
   });
 });
 

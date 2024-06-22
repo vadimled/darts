@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -50,7 +50,16 @@ const GameScreen = () => {
     });
 
     newSocket.on('receive_name', namePlayer2 => {
+      console.log('Получено имя второго игрока:', namePlayer2);
       dispatch(setPlayer2(namePlayer2));
+    });
+
+    newSocket.on('all_user_names', names => {
+      console.log('Получены все имена игроков:', names);
+      const otherPlayerId = Object.keys(names).find(id => id !== newSocket.id);
+      if (otherPlayerId) {
+        dispatch(setPlayer2(names[otherPlayerId]));
+      }
     });
 
     newSocket.on('max_users', message => {
@@ -96,7 +105,6 @@ const GameScreen = () => {
 
     setScorePlayer1(newScorePlayer1);
     setScorePlayer2(newScorePlayer2);
-    // setCurrentPlayer(newCurrentPlayer);
     setInputValue('');
 
     const newState = {
@@ -110,6 +118,10 @@ const GameScreen = () => {
     // Отправка данных через сокет
     socket?.emit('game_state', newState);
   };
+
+  useEffect(() => {
+    console.tron.log('Состояние Redux:', {player1, player2});
+  }, [player1, player2]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
