@@ -163,6 +163,7 @@ const GameScreen = () => {
           onChangeText={setInputValue}
           keyboardType="numeric"
           placeholder="Введите очки"
+          placeholderTextColor="#8E8D8D"
           editable={isGameBeLaunched}
         />
         <Button
