@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -22,8 +22,8 @@ const GameScreen = () => {
   const player1 = useSelector((state: RootState) => state.user.player1);
   const player2 = useSelector((state: RootState) => state.user.player2);
   const [socket, setSocket] = useState<SocketState>(null);
-  const [playersCount, setPlayersCount] = useState(0);
-  // const [currentPlayer, setCurrentPlayer] = useState<string>('');
+  const [playersCount, setPlayersCount] = useState(1);
+  const [isGameBeLaunched, setGameStatus] = useState<boolean>(false);
 
   const [scorePlayer1, setScorePlayer1] = useState(308);
   const [scorePlayer2, setScorePlayer2] = useState(361);
@@ -32,9 +32,16 @@ const GameScreen = () => {
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
   const [inputValue, setInputValue] = useState('');
 
+  socket?.on('usersCount', count => {
+
+    // @ts-ignore
+    setPlayersCount(console.log(`usersCount(setPlayersCount)=${count}`) || count);
+    setGameStatus(playersCount === 2 ? true : false);
+    console.log(`usersCount=${count}, playersCount: ${playersCount}, isGameBeLaunched: ${isGameBeLaunched}`);
+  });
+
   useEffect(() => {
     const newSocket = io('http://192.168.1.162:3000');
-    setSocket(newSocket);
 
     newSocket.on('connect', () => {
       console.log('Подключен к сокет серверу:', newSocket.id);
@@ -48,6 +55,8 @@ const GameScreen = () => {
       name: player1,
     });
 
+    setSocket(newSocket);
+
     return () => {
       newSocket.disconnect();
       console.log('Сокет отключен при размонтировании компонента');
@@ -55,16 +64,7 @@ const GameScreen = () => {
   }, []);
 
   useEffect(() => {
-    socket?.on('usersCount', count => {
-      console.log('Players count: ', count);
-      setPlayersCount(count);
-    });
-  }, [socket, playersCount]);
-
-  useEffect(() => {
-    // Обработка события сокета
     socket?.on('receive_name', namePlayer2 => {
-      console.log('Player 2: ', namePlayer2);
       dispatch(setPlayer2(namePlayer2));
     });
 
@@ -76,29 +76,11 @@ const GameScreen = () => {
   useEffect(() => {
     if (playersCount === 1) {
       dispatch(setPlayer2(undefined));
+      setGameStatus(false);
     }
-  }, [playersCount]);
+    // console.log(`playersCount: ${playersCount}, isGameBeLaunched: ${isGameBeLaunched}`);
 
-  // socket?.on('game_state', state => {
-  //   setScorePlayer1(state.scorePlayer1);
-  //   setScorePlayer2(state.scorePlayer2);
-  //   setLegsPlayer1(state.legsPlayer1);
-  //   setLegsPlayer2(state.legsPlayer2);
-  //   setCurrentPlayer(state.currentPlayer);
-  // });
-
-  //
-  // useEffect(() => {
-  //   socket?.on('receive_name', name => {
-  //     console.log('Player name: ', name);
-  //     setPlayersCount(count);
-  //   });
-  // }, [socket]);
-  //
-
-  const canTheGameBeLaunched = (): boolean => {
-    return playersCount === 2;
-  };
+  }, [dispatch, playersCount]);
 
   const handleSend = () => {
     const value = parseInt(inputValue, 10);
@@ -175,12 +157,12 @@ const GameScreen = () => {
           onChangeText={setInputValue}
           keyboardType="numeric"
           placeholder="Введите очки"
-          editable={canTheGameBeLaunched()}
+          editable={isGameBeLaunched}
         />
         <Button
           title="Send"
           onPress={handleSend}
-          disabled={!canTheGameBeLaunched()}
+          disabled={!isGameBeLaunched}
         />
       </View>
     </SafeAreaView>

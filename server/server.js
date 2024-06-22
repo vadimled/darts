@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 io.use((socket, next) => {
-  console.log(socket.connected);
+  console.log(`socket connected: ${socket.connected}`);
   next();
 });
 
@@ -24,9 +24,7 @@ io.on('connection', socket => {
   console.log('Пользователи:', connectedUsers);
 
   // Сообщаем всем клиентам о изменении числа подключенных пользователей
-  socket.broadcast.emit('usersCount', {
-    count: connectedUsers.size,
-  });
+  socket.broadcast.emit('usersCount', connectedUsers.size);
 
   // Обработка получения сообщения от клиента
   socket.on('send_name', secondPlayerName => {
