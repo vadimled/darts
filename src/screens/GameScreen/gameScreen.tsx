@@ -15,7 +15,6 @@ import {RootState} from '../../store';
 import {setPlayer2} from '../../store/gameSlice';
 import {useDispatch} from 'react-redux';
 
-// Определяем тип состояния для сокета
 type SocketState = Socket<DefaultEventsMap, DefaultEventsMap> | null;
 
 const GameScreen = () => {
@@ -24,9 +23,7 @@ const GameScreen = () => {
   const player2 = useSelector((state: RootState) => state.user.player2);
   const [socket, setSocket] = useState<SocketState>(null);
   const [playersCount, setPlayersCount] = useState(1);
-  const [isGameBeLaunched, setGameStatus] = useState<boolean>(false);
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
-
   const [scorePlayer1, setScorePlayer1] = useState(308);
   const [scorePlayer2, setScorePlayer2] = useState(361);
   const [legsPlayer1, setLegsPlayer1] = useState(9);
@@ -47,10 +44,6 @@ const GameScreen = () => {
 
     newSocket.on('usersCount', count => {
       setPlayersCount(count);
-      setGameStatus(count === 2);
-      if (count === 2) {
-        chooseStartingPlayer(newSocket);
-      }
     });
 
     newSocket.on('receive_name', namePlayer2 => {
@@ -59,7 +52,7 @@ const GameScreen = () => {
     });
 
     newSocket.on('starting_player', name => {
-      Alert.alert(`Оппа, повезло тебе ${name}, начинай`,);
+      Alert.alert(`Оппа, повезло тебе ${name}, начинай`);
       setCurrentPlayer(name);
     });
 
@@ -75,10 +68,6 @@ const GameScreen = () => {
       console.log('Достигнуто максимальное количество подключенных игроков');
     });
 
-    newSocket.on('starting_player', player => {
-      setCurrentPlayer(player);
-    });
-
     setSocket(newSocket);
 
     return () => {
@@ -88,26 +77,10 @@ const GameScreen = () => {
   }, [dispatch, player1]);
 
   useEffect(() => {
-    console.log('------->', { currentPlayer, player1 });
-    console.tron.log('Состояние Redux:', {currentPlayer, player2});
-    if(player1 === currentPlayer) {
-      setGameStatus(true);
-    }
-  }, [currentPlayer]);
-
-  useEffect(() => {
     if (playersCount === 1) {
       dispatch(setPlayer2(undefined));
-      setGameStatus(false);
     }
   }, [dispatch, playersCount]);
-
-  const chooseStartingPlayer = (
-    socket: Socket<DefaultEventsMap, DefaultEventsMap>,
-  ) => {
-    const startingPlayer = Math.random() < 0.5 ? player1 : player2;
-    socket.emit('starting_player', startingPlayer);
-  };
 
   const handleSend = () => {
     // const value = parseInt(inputValue, 10);
@@ -141,10 +114,6 @@ const GameScreen = () => {
     // // Отправка данных через сокет
     // socket?.emit('game_state', newState);
   };
-
-  useEffect(() => {
-    console.tron.log('Состояние Redux:', {player1, player2});
-  }, [player1, player2]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -181,18 +150,21 @@ const GameScreen = () => {
           </View>
         </View>
         <TextInput
-          style={[styles.input, isGameBeLaunched && styles.inputActive]}
+          style={[
+            styles.input,
+            currentPlayer === player1 && styles.inputActive,
+          ]}
           value={inputValue}
           onChangeText={setInputValue}
           keyboardType="numeric"
           placeholder="Введите очки"
           placeholderTextColor="#8E8D8D"
-          editable={isGameBeLaunched}
+          editable={currentPlayer === player1}
         />
         <Button
           title="Send"
           onPress={handleSend}
-          disabled={!isGameBeLaunched}
+          disabled={currentPlayer !== player1}
         />
       </View>
     </SafeAreaView>
