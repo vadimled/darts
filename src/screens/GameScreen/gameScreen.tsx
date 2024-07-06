@@ -79,6 +79,7 @@ const GameScreen = () => {
   useEffect(() => {
     if (playersCount === 1) {
       dispatch(setPlayer2(undefined));
+      setCurrentPlayer('');
     }
   }, [dispatch, playersCount]);
 
@@ -111,9 +112,10 @@ const GameScreen = () => {
     //   currentPlayer: newCurrentPlayer,
     // };
     //
-    // // Отправка данных через сокет
     // socket?.emit('game_state', newState);
   };
+
+  const isInputActive = playersCount === 2 && currentPlayer === player1;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -150,22 +152,15 @@ const GameScreen = () => {
           </View>
         </View>
         <TextInput
-          style={[
-            styles.input,
-            currentPlayer === player1 && styles.inputActive,
-          ]}
+          style={[styles.input, isInputActive && styles.inputActive]}
           value={inputValue}
           onChangeText={setInputValue}
           keyboardType="numeric"
           placeholder="Введите очки"
           placeholderTextColor="#8E8D8D"
-          editable={currentPlayer === player1}
+          editable={isInputActive}
         />
-        <Button
-          title="Send"
-          onPress={handleSend}
-          disabled={currentPlayer !== player1}
-        />
+        <Button title="Send" onPress={handleSend} disabled={!isInputActive} />
       </View>
     </SafeAreaView>
   );
