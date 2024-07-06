@@ -1,29 +1,63 @@
-import React, {FC} from 'react';
-import {Modal, View, Text, StyleSheet} from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
+import React, {FC, useState} from 'react';
+import {Modal, View, Text, StyleSheet, Button} from 'react-native';
+import RNPickerSelect, {PickerSelectProps} from 'react-native-picker-select';
 
 interface UsernameSelectorType {
   isVisible: boolean;
   onSelect: (username: string) => void;
 }
 
-const UsernameSelector: FC<UsernameSelectorType> = ({isVisible, onSelect}) => (
-  <Modal visible={isVisible} animationType="slide" transparent>
-    <View style={styles.centeredView}>
-      <View style={styles.modalView}>
-        <Text>Select a username:</Text>
-        <RNPickerSelect
-          onValueChange={value => onSelect(value)}
-          items={[
-            {label: 'Vadim', value: 'Vadim'},
-            {label: 'Ilya', value: 'Ilya'},
-          ]}
-          style={pickerSelectStyles}
-        />
+const items = [
+  {label: 'Vadim', value: 'Vadim'},
+  {label: 'Ilya', value: 'Ilya'},
+];
+
+const UsernameSelector: FC<UsernameSelectorType> = ({isVisible, onSelect}) => {
+  const [selectedValue, setSelectedValue] = useState<string | null>(null);
+
+  const pickerSelectProps: PickerSelectProps = {
+    onValueChange: value => setSelectedValue(value),
+    items: items,
+    style: {
+      inputIOS: {
+        color: 'black',
+        paddingHorizontal: 10,
+        paddingVertical: 12,
+        borderRadius: 4,
+        backgroundColor: 'white',
+        borderColor: 'gray',
+        borderWidth: 1,
+      },
+      inputAndroid: {
+        color: 'black',
+      },
+      placeholder: {
+        color: 'gray',
+        fontSize: 12,
+      },
+    },
+    placeholder: {
+      label: 'Select a sport...',
+      value: null,
+      color: 'gray',
+    },
+  };
+
+  return (
+    <Modal visible={isVisible} animationType="slide" transparent>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text>Select a username:</Text>
+          <RNPickerSelect {...pickerSelectProps} />
+          {selectedValue && (
+            <Text style={styles.selectedValue}>Selected: {selectedValue}</Text>
+          )}
+        </View>
+        <Button title="Send" onPress={() => onSelect(selectedValue || '')} />
       </View>
-    </View>
-  </Modal>
-);
+    </Modal>
+  );
+};
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -46,9 +80,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-});
-
-const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 16,
     paddingVertical: 12,
@@ -68,6 +99,11 @@ const pickerSelectStyles = StyleSheet.create({
     borderRadius: 8,
     color: 'black',
     paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  selectedValue: {
+    marginTop: 16,
+    fontSize: 18,
+    color: 'blue',
   },
 });
 

@@ -6,6 +6,7 @@ import {
   Button,
   StyleSheet,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import io, {Socket} from 'socket.io-client';
 import {DefaultEventsMap} from '@socket.io/component-emitter';
@@ -24,12 +25,12 @@ const GameScreen = () => {
   const [socket, setSocket] = useState<SocketState>(null);
   const [playersCount, setPlayersCount] = useState(1);
   const [isGameBeLaunched, setGameStatus] = useState<boolean>(false);
+  const [currentPlayer, setCurrentPlayer] = useState<string>('');
 
   const [scorePlayer1, setScorePlayer1] = useState(308);
   const [scorePlayer2, setScorePlayer2] = useState(361);
   const [legsPlayer1, setLegsPlayer1] = useState(9);
   const [legsPlayer2, setLegsPlayer2] = useState(10);
-  const [currentPlayer, setCurrentPlayer] = useState<string>('');
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
@@ -47,11 +48,19 @@ const GameScreen = () => {
     newSocket.on('usersCount', count => {
       setPlayersCount(count);
       setGameStatus(count === 2);
+      if (count === 2) {
+        chooseStartingPlayer(newSocket);
+      }
     });
 
     newSocket.on('receive_name', namePlayer2 => {
       console.log('Получено имя второго игрока:', namePlayer2);
       dispatch(setPlayer2(namePlayer2));
+    });
+
+    newSocket.on('starting_player', name => {
+      Alert.alert(`Оппа, повезло тебе ${name}, начинай`,);
+      setCurrentPlayer(name);
     });
 
     newSocket.on('all_user_names', names => {
@@ -66,6 +75,10 @@ const GameScreen = () => {
       console.log('Достигнуто максимальное количество подключенных игроков');
     });
 
+    newSocket.on('starting_player', player => {
+      setCurrentPlayer(player);
+    });
+
     setSocket(newSocket);
 
     return () => {
@@ -75,10 +88,12 @@ const GameScreen = () => {
   }, [dispatch, player1]);
 
   useEffect(() => {
-    if (socket) {
-      socket.emit('send_name', {name: player1});
+    console.log('------->', { currentPlayer, player1 });
+    console.tron.log('Состояние Redux:', {currentPlayer, player2});
+    if(player1 === currentPlayer) {
+      setGameStatus(true);
     }
-  }, [socket, player1]);
+  }, [currentPlayer]);
 
   useEffect(() => {
     if (playersCount === 1) {
@@ -87,36 +102,44 @@ const GameScreen = () => {
     }
   }, [dispatch, playersCount]);
 
+  const chooseStartingPlayer = (
+    socket: Socket<DefaultEventsMap, DefaultEventsMap>,
+  ) => {
+    const startingPlayer = Math.random() < 0.5 ? player1 : player2;
+    socket.emit('starting_player', startingPlayer);
+  };
+
   const handleSend = () => {
-    const value = parseInt(inputValue, 10);
-    if (isNaN(value)) {
-      return;
-    }
-
-    let newScorePlayer1 = scorePlayer1;
-    let newScorePlayer2 = scorePlayer2;
-    let newCurrentPlayer = player2;
-
-    if (currentPlayer === player1) {
-      newScorePlayer1 -= value;
-    } else {
-      newScorePlayer2 -= value;
-    }
-
-    setScorePlayer1(newScorePlayer1);
-    setScorePlayer2(newScorePlayer2);
-    setInputValue('');
-
-    const newState = {
-      scorePlayer1: newScorePlayer1,
-      scorePlayer2: newScorePlayer2,
-      legsPlayer1,
-      legsPlayer2,
-      currentPlayer: newCurrentPlayer,
-    };
-
-    // Отправка данных через сокет
-    socket?.emit('game_state', newState);
+    // const value = parseInt(inputValue, 10);
+    // if (isNaN(value)) {
+    //   return;
+    // }
+    //
+    // let newScorePlayer1 = scorePlayer1;
+    // let newScorePlayer2 = scorePlayer2;
+    // let newCurrentPlayer = currentPlayer === player1 ? player2 : player1;
+    //
+    // if (currentPlayer === player1) {
+    //   newScorePlayer1 -= value;
+    // } else {
+    //   newScorePlayer2 -= value;
+    // }
+    //
+    // setScorePlayer1(newScorePlayer1);
+    // setScorePlayer2(newScorePlayer2);
+    // setCurrentPlayer(newCurrentPlayer || 'player1');
+    // setInputValue('');
+    //
+    // const newState = {
+    //   scorePlayer1: newScorePlayer1,
+    //   scorePlayer2: newScorePlayer2,
+    //   legsPlayer1,
+    //   legsPlayer2,
+    //   currentPlayer: newCurrentPlayer,
+    // };
+    //
+    // // Отправка данных через сокет
+    // socket?.emit('game_state', newState);
   };
 
   useEffect(() => {
@@ -158,7 +181,7 @@ const GameScreen = () => {
           </View>
         </View>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isGameBeLaunched && styles.inputActive]}
           value={inputValue}
           onChangeText={setInputValue}
           keyboardType="numeric"
@@ -240,6 +263,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     color: '#fff',
     backgroundColor: '#333',
+  },
+  inputActive: {
+    color: 'black',
+    backgroundColor: '#ccc',
   },
 });
 
