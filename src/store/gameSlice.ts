@@ -20,8 +20,8 @@ const initialState: GameSliceState = {
   gameState: {
     scorePlayer1: 301,
     scorePlayer2: 301,
-    legsPlayer1: 1,
-    legsPlayer2: 1,
+    legsPlayer1: 0,
+    legsPlayer2: 0,
     currentPlayer: '',
   },
 };

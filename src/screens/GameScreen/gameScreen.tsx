@@ -96,6 +96,15 @@ const GameScreen = () => {
     }
   }, [dispatch, playersCount]);
 
+  //TODO
+  const analyzeRemainingPoints = () => {
+    const maxStartedNumber = 182;
+    const minDoubleNumber = 2;
+    if(scorePlayer1 > maxStartedNumber ) return;
+
+
+  }
+
   const handleSend = () => {
     const value = parseInt(inputValue, 10);
     if (isNaN(value)) {
