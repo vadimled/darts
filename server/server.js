@@ -42,6 +42,31 @@ io.on('connection', socket => {
     }
   });
 
+  socket.on('game_state', gameState => {
+    console.log(
+      `Сообщение от ${userNames[socket.id]} о статусе игры: ${JSON.stringify(
+        gameState,
+        null,
+        2,
+      )}`,
+    );
+    const users = Array.from(connectedUsers);
+    console.log('to secondPlayer:', gameState.currentPlayer);
+    const secondPlayerId = users.find(id => {
+      return userNames[id] === gameState.currentPlayer;
+    });
+
+    const newGameState = {
+      scorePlayer1: gameState.scorePlayer2,
+      scorePlayer2: gameState.scorePlayer1,
+      legsPlayer1: gameState.legsPlayer2,
+      legsPlayer2: gameState.legsPlayer1,
+      currentPlayer: gameState.currentPlayer,
+    };
+    console.log({gameState, newGameState});
+    io.to(secondPlayerId).emit('game_state_to_second_player', newGameState);
+  });
+
   socket.on('disconnect', () => {
     console.log('Пользователь отключен:', socket.id);
     connectedUsers.delete(socket.id);

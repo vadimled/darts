@@ -12,7 +12,7 @@ import io, {Socket} from 'socket.io-client';
 import {DefaultEventsMap} from '@socket.io/component-emitter';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store';
-import {setPlayer2} from '../../store/gameSlice';
+import {GameState, setGameState, setPlayer2} from '../../store/gameSlice';
 import {useDispatch} from 'react-redux';
 
 type SocketState = Socket<DefaultEventsMap, DefaultEventsMap> | null;
@@ -21,13 +21,13 @@ const GameScreen = () => {
   const dispatch = useDispatch();
   const player1 = useSelector((state: RootState) => state.user.player1);
   const player2 = useSelector((state: RootState) => state.user.player2);
+  const {scorePlayer1, scorePlayer2, legsPlayer1, legsPlayer2} = useSelector(
+    (state: RootState) => state.user.gameState,
+  );
+
   const [socket, setSocket] = useState<SocketState>(null);
   const [playersCount, setPlayersCount] = useState(1);
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
-  const [scorePlayer1, setScorePlayer1] = useState(308);
-  const [scorePlayer2, setScorePlayer2] = useState(361);
-  const [legsPlayer1, setLegsPlayer1] = useState(9);
-  const [legsPlayer2, setLegsPlayer2] = useState(10);
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
@@ -68,6 +68,19 @@ const GameScreen = () => {
       console.log('Достигнуто максимальное количество подключенных игроков');
     });
 
+    newSocket.on('game_state_to_second_player', (newState: GameState) => {
+      console.log(
+        `game_state_to_second_player: ${JSON.stringify(
+          newState,
+          null,
+          2,
+        )};  player1: ${player1};  `,
+      );
+
+      dispatch(setGameState(newState));
+      setCurrentPlayer(newState.currentPlayer || '');
+    });
+
     setSocket(newSocket);
 
     return () => {
@@ -84,35 +97,34 @@ const GameScreen = () => {
   }, [dispatch, playersCount]);
 
   const handleSend = () => {
-    // const value = parseInt(inputValue, 10);
-    // if (isNaN(value)) {
-    //   return;
-    // }
-    //
-    // let newScorePlayer1 = scorePlayer1;
-    // let newScorePlayer2 = scorePlayer2;
-    // let newCurrentPlayer = currentPlayer === player1 ? player2 : player1;
-    //
-    // if (currentPlayer === player1) {
-    //   newScorePlayer1 -= value;
-    // } else {
-    //   newScorePlayer2 -= value;
-    // }
-    //
-    // setScorePlayer1(newScorePlayer1);
-    // setScorePlayer2(newScorePlayer2);
-    // setCurrentPlayer(newCurrentPlayer || 'player1');
-    // setInputValue('');
-    //
-    // const newState = {
-    //   scorePlayer1: newScorePlayer1,
-    //   scorePlayer2: newScorePlayer2,
-    //   legsPlayer1,
-    //   legsPlayer2,
-    //   currentPlayer: newCurrentPlayer,
-    // };
-    //
-    // socket?.emit('game_state', newState);
+    const value = parseInt(inputValue, 10);
+    if (isNaN(value)) {
+      return;
+    }
+
+    let newScorePlayer1 = scorePlayer1;
+    let newScorePlayer2 = scorePlayer2;
+    let newCurrentPlayer = currentPlayer === player1 ? player2 : player1;
+
+    if (currentPlayer === player1) {
+      newScorePlayer1 -= value;
+    } else {
+      newScorePlayer2 -= value;
+    }
+
+    setCurrentPlayer(newCurrentPlayer || 'player1');
+    setInputValue('');
+
+    const newState: GameState = {
+      scorePlayer1: newScorePlayer1,
+      scorePlayer2: newScorePlayer2,
+      legsPlayer1,
+      legsPlayer2,
+      currentPlayer: newCurrentPlayer,
+    };
+
+    dispatch(setGameState(newState));
+    socket?.emit('game_state', newState);
   };
 
   const isInputActive = playersCount === 2 && currentPlayer === player1;

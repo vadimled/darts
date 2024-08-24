@@ -1,15 +1,29 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-// Define a type for the slice state
-interface UserState {
-  player1: string | undefined;
-  player2: string | undefined;
+export interface GameState {
+  scorePlayer1: number;
+  scorePlayer2: number;
+  legsPlayer1: number;
+  legsPlayer2: number;
+  currentPlayer: string | undefined;
 }
 
-// Define the initial state using that type
-const initialState: UserState = {
+interface GameSliceState {
+  player1?: string;
+  player2?: string;
+  gameState: GameState;
+}
+
+const initialState: GameSliceState = {
   player1: undefined,
   player2: undefined,
+  gameState: {
+    scorePlayer1: 301,
+    scorePlayer2: 301,
+    legsPlayer1: 1,
+    legsPlayer2: 1,
+    currentPlayer: '',
+  },
 };
 
 const gameSlice = createSlice({
@@ -26,9 +40,13 @@ const gameSlice = createSlice({
       state.player1 = undefined;
       state.player2 = undefined;
     },
+    setGameState: (state, action: PayloadAction<GameState>) => {
+      state.gameState = action.payload;
+    },
   },
 });
 
-export const {setPlayer1, setPlayer2, clearPlayers} = gameSlice.actions;
+export const {setPlayer1, setPlayer2, clearPlayers, setGameState} =
+  gameSlice.actions;
 
 export const userSliceReducer = gameSlice.reducer;
