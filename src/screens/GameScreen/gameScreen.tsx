@@ -29,6 +29,7 @@ const GameScreen = () => {
   const [playersCount, setPlayersCount] = useState(1);
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
   const [inputValue, setInputValue] = useState('');
+  const [currentStatus, setCurrentStatus] = useState<GameState>({} as GameState);
 
   useEffect(() => {
     const newSocket = io('http://192.168.1.162:3000');
@@ -105,6 +106,13 @@ const GameScreen = () => {
 
   }
 
+  const handleBust = () => {
+    let newCurrentPlayer = currentPlayer === player1 ? player2 : player1;
+    setCurrentPlayer(newCurrentPlayer || 'player1');
+    dispatch(setGameState(currentStatus));
+    socket?.emit('game_state', currentStatus);
+  }
+
   const handleSend = () => {
     const value = parseInt(inputValue, 10);
     if (isNaN(value)) {
@@ -131,7 +139,7 @@ const GameScreen = () => {
       legsPlayer2,
       currentPlayer: newCurrentPlayer,
     };
-
+    setCurrentStatus(newState);
     dispatch(setGameState(newState));
     socket?.emit('game_state', newState);
   };
@@ -182,6 +190,7 @@ const GameScreen = () => {
           editable={isInputActive}
         />
         <Button title="Send" onPress={handleSend} disabled={!isInputActive} />
+        <Button title="Bust" onPress={handleBust} disabled={!isInputActive} />
       </View>
     </SafeAreaView>
   );
