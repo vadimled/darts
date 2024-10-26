@@ -14,5 +14,8 @@ module.exports = {
       },
     ],
     'react-native-reanimated/plugin',
+    ['@babel/plugin-transform-private-methods', { loose: true }], // Добавляем loose: true
+    ['@babel/plugin-transform-class-properties', { loose: true }], // Добавляем loose: true
+    ['@babel/plugin-transform-private-property-in-object', { loose: true }] // Добавляем loose: true
   ],
 };

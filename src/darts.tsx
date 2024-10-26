@@ -13,7 +13,7 @@ export type AppStackParamList = {
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
-const Darts = (): ReactElement => {
+export const Darts = (): ReactElement => {
   const MyTheme = {
     ...DefaultTheme,
     colors: {
@@ -65,4 +65,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Darts;
