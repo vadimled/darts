@@ -1,8 +1,8 @@
-import {configureStore} from '@reduxjs/toolkit';
-import {authSliceReducer} from './authSlice';
-import {userSliceReducer} from './gameSlice';
-import {setupListeners} from '@reduxjs/toolkit/query';
-import {socketSliceReducer} from './socketSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import { authSliceReducer } from './authSlice';
+import { userSliceReducer } from './gameSlice';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { socketSliceReducer } from './socketSlice';
 import Reactotron from '../../ReactotronConfig';
 
 export const store = configureStore({
@@ -11,7 +11,10 @@ export const store = configureStore({
     user: userSliceReducer,
     socket: socketSliceReducer,
   },
-  enhancers: [Reactotron.createEnhancer()],
+  enhancers: (getDefaultEnhancers) => {
+    const reactotronEnhancer = __DEV__ ? [Reactotron.createEnhancer!()] : [];
+    return getDefaultEnhancers().concat(reactotronEnhancer);
+  }
 });
 
 setupListeners(store.dispatch);
