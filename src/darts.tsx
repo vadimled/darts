@@ -9,6 +9,7 @@ export type AppStackParamList = {
   Home: undefined;
   Game: undefined;
   Drawer: undefined;
+  id?: NavigatorID;
 };
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -29,7 +30,7 @@ export const Darts = (): ReactElement => {
       source={backgroundImage}
       resizeMode="stretch">
       <NavigationContainer theme={MyTheme}>
-        <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Navigator id={undefined} screenOptions={{headerShown: false}}>
           <Stack.Screen
             name="Drawer"
             component={DrawerNavigator}
