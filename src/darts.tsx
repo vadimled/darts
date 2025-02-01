@@ -8,7 +8,7 @@ import DrawerNavigator from '@components/drawerNavigator/drawerNavigator';
 export type AppStackParamList = {
   Home: undefined;
   Game: undefined;
-  Drawer: undefined; // Добавляем Drawer как тип
+  Drawer: undefined;
 };
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
