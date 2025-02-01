@@ -1,19 +1,12 @@
-import React, {FC} from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import React from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import GameScreen from '@screens/GameScreen';
 import TrainingScreen from '@screens/TrainingScreen';
 import HomeScreen from '@screens/HomeScreen';
-import { AppStackParamList } from "../../darts";
-import { RouteProp } from "@react-navigation/native";
 
 const Drawer = createDrawerNavigator();
-type DrawerScreenRouteProp = RouteProp<AppStackParamList, 'Drawer'>;
 
-type Props = {
-  route: DrawerScreenRouteProp;
-};
-
-const DrawerNavigator: FC<Props> = () => {
+const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
       initialRouteName="Home"
