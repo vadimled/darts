@@ -1,9 +1,12 @@
 const express = require('express');
 const http = require('http');
 const {Server} = require('socket.io');
+const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
+app.use(cors());
+
 const io = new Server(server);
 const PORT = 3000;
 const connectedUsers = new Set();
