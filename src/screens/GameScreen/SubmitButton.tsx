@@ -10,7 +10,7 @@ type SubmitButtonProps = {
 
 export const SubmitButton: React.FC<SubmitButtonProps> = ({
                                                             onPress,
-                                                            label = 'SUBMIT',
+                                                            label = 'SEND',
                                                             style,
                                                             textStyle,
                                                           }) => {
@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    marginVertical: 12,
   },
   text: {
     color: '#FFFCEB',

@@ -15,6 +15,7 @@ import {RootState} from '../../store';
 import {GameState, setGameState, setPlayer2} from '../../store/gameSlice';
 import {useDispatch} from 'react-redux';
 import { PlayerScoreCardGroup } from "@screens/GameScreen/playerScoreCardGroup";
+import { SubmitButton } from "@screens/GameScreen/SubmitButton";
 
 type SocketState = Socket<DefaultEventsMap, DefaultEventsMap> | null;
 
@@ -208,7 +209,7 @@ export const GameScreen: React.FC = () => {
           editable={isInputActive}
         />
         {/*{error.length > 0 && <Text style={styles.errorText}>{error}</Text>}*/}
-        {/*<SubmitButton onPress={handleSubmit} />*/}
+        <SubmitButton onPress={handleSend} />
       </View>
 
       {/*<View style={{ marginTop: 24 }}>*/}
