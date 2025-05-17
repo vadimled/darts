@@ -38,8 +38,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   score: {
+    textAlign: 'center',
     fontSize: 48,
     fontWeight: 'bold',
     color: '#FFFCEB',
+    backgroundColor: '#012D24',
+    width: '100%'
   },
 });
