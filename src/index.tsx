@@ -7,7 +7,7 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import {AppRegistry} from 'react-native';
 import { Darts } from './darts';
-import {name as appName} from './app.json';
+import {name as appName} from '../app.json';
 
 import {Provider} from 'react-redux';
 import {store} from './store';

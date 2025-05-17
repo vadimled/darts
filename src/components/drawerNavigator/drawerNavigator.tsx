@@ -1,14 +1,15 @@
-import React, {FC} from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import GameScreen from '@screens/GameScreen';
-import TrainingScreen from '@screens/TrainingScreen';
-import HomeScreen from '@screens/HomeScreen';
+import React from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import GameScreen from '../../screens/GameScreen';
+import TrainingScreen from '../../screens/TrainingScreen';
+import HomeScreen from '../../screens/HomeScreen';
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator: FC = () => {
+const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
+      id={undefined}
       initialRouteName="Home"
       screenOptions={{
         drawerType: 'slide',
