@@ -15,7 +15,7 @@ import {RootState} from '../../store';
 import {GameState, setGameState, setPlayer2} from '../../store/gameSlice';
 import {useDispatch} from 'react-redux';
 import { PlayerScoreCardGroup } from "@screens/GameScreen/playerScoreCardGroup";
-import { SubmitButton } from "@screens/GameScreen/SubmitButton";
+import { SubmitButton } from "@screens/GameScreen/submitButton";
 
 type SocketState = Socket<DefaultEventsMap, DefaultEventsMap> | null;
 
@@ -178,10 +178,9 @@ export const GameScreen: React.FC = () => {
         <Text style={styles.headerText}>Game</Text>
       </View>
 
-
       <View style={styles.scoreBlock}>
-       <PlayerScoreCardGroup scorePlayer1={150} scorePlayer2={135} legsPlayer1={'Vadim'} legsPlayer2={'Ilya'} />
-       </View>
+        <PlayerScoreCardGroup scorePlayer1={scorePlayer1} scorePlayer2={scorePlayer2} legsPlayer1={'Vadim'} legsPlayer2={'Ilya'} />
+      </View>
 
       <View style={styles.legsBlock}>
         <Text style={styles.legsTitle}>LEGS</Text>
@@ -211,7 +210,6 @@ export const GameScreen: React.FC = () => {
         {/*{error.length > 0 && <Text style={styles.errorText}>{error}</Text>}*/}
         <SubmitButton onPress={handleSend} />
       </View>
-
       {/*<View style={{ marginTop: 24 }}>*/}
       {/*  <Text style={styles.legsTitle}>Live Updates:</Text>*/}
       {/*  {messages.map((msg, idx) => (*/}
@@ -244,11 +242,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 24,
   },
-  // headerText: {
-  //   color: '#FFFCEB',
-  //   fontSize: 32,
-  //   fontWeight: 'bold',
-  // },
   headerText: {
     color: '#FFFCEB',
     fontSize: 32,
