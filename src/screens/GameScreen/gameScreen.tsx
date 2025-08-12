@@ -34,7 +34,7 @@ export const GameScreen: React.FC = () => {
   const [currentStatus, setCurrentStatus] = useState<GameState>({} as GameState);
 
   useEffect(() => {
-    const newSocket = io('http://192.168.1.162:3000');
+    const newSocket = io('http://localhost:3000');
 
     newSocket.on('connect', () => {
       console.log('Подключен к сокет серверу:', newSocket.id);
