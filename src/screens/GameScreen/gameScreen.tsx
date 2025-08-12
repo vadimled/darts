@@ -205,7 +205,7 @@ export const GameScreen: React.FC = () => {
           keyboardType="numeric"
           placeholder="Введите очки"
           placeholderTextColor="#8E8D8D"
-          editable={isInputActive}
+          editable
         />
         {/*{error.length > 0 && <Text style={styles.errorText}>{error}</Text>}*/}
         <SubmitButton onPress={handleSend} />
