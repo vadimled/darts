@@ -195,7 +195,7 @@ export const GameScreen: React.FC = () => {
           value={inputValue}
           onChangeText={setInputValue}
           keyboardType="numeric"
-          placeholder="Введите очки"
+          placeholder={isInputActive ? "Введите очки" : ''}
           placeholderTextColor="#8E8D8D"
           editable={isInputActive}
         />
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 48,
-    backgroundColor: "#F6F1DD",
+    backgroundColor: "#706f6f",
     borderRadius: 12,
     paddingHorizontal: 12,
     fontSize: 18,
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   },
   inputActive: {
     color: "black",
-    backgroundColor: "#ccc"
+    backgroundColor: "#F6F1DD"
   }
 
 });

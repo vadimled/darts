@@ -17,7 +17,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
                                                             disabled = true
                                                           }) => {
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress} disabled={disabled}>
+    <TouchableOpacity style={[styles.button, disabled && styles.disabled, style]} onPress={onPress} disabled={disabled}>
       <Text style={[styles.text, textStyle]}>{label}</Text>
     </TouchableOpacity>
   );
@@ -25,13 +25,16 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: 256, // 512 / 2 for high-DPI scaling
-    height: 69, // 138 / 2
+    width: 256,
+    height: 69,
     backgroundColor: "#D96A1E",
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 12
+  },
+  disabled: {
+    backgroundColor: "#392315",
   },
   text: {
     color: "#FFFCEB",
