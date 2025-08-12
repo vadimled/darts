@@ -1,21 +1,23 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import React from "react";
+import { StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 
 type SubmitButtonProps = {
   onPress: () => void;
   label?: string;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  disabled?: boolean;
 };
 
 export const SubmitButton: React.FC<SubmitButtonProps> = ({
                                                             onPress,
-                                                            label = 'SEND',
+                                                            label = "SEND",
                                                             style,
                                                             textStyle,
+                                                            disabled = true
                                                           }) => {
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
+    <TouchableOpacity style={[styles.button, style]} onPress={onPress} disabled={disabled}>
       <Text style={[styles.text, textStyle]}>{label}</Text>
     </TouchableOpacity>
   );
@@ -25,16 +27,16 @@ const styles = StyleSheet.create({
   button: {
     width: 256, // 512 / 2 for high-DPI scaling
     height: 69, // 138 / 2
-    backgroundColor: '#D96A1E',
+    backgroundColor: "#D96A1E",
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 12
   },
   text: {
-    color: '#FFFCEB',
-    fontWeight: 'bold',
+    color: "#FFFCEB",
+    fontWeight: "bold",
     fontSize: 20,
-    letterSpacing: 1,
-  },
+    letterSpacing: 1
+  }
 });
