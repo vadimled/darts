@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Alert, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Keyboard,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View
+} from "react-native";
 import io, { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { useDispatch, useSelector } from "react-redux";
@@ -164,51 +173,47 @@ export const GameScreen: React.FC = () => {
   // };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Game</Text>
-      </View>
-
-      <View style={styles.scoreBlock}>
-        <PlayerScoreCardGroup scorePlayer1={scorePlayer1} scorePlayer2={scorePlayer2} legsPlayer1={!!player1 && player1}
-                              legsPlayer2={!!player2 && player2} />
-      </View>
-
-      <View style={styles.legsBlock}>
-        <Text style={styles.legsTitle}>LEGS</Text>
-        <View style={styles.legsRow}>
-          <Text style={styles.legsPlayer}>Player 1 </Text>
-          <Text style={styles.legsScore}>1-0</Text>
-          <Text style={styles.legsScore}>3</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Game</Text>
         </View>
-        <View style={styles.legsRow}>
-          <Text style={styles.legsPlayer}>Player 2 </Text>
-          <Text style={styles.legsScore}>0-1</Text>
-          <Text style={styles.legsScore}>0</Text>
-        </View>
-      </View>
 
-      <View style={styles.inputBlock}>
-        <Text style={styles.inputLabel}>Enter Throws</Text>
-        <TextInput
-          style={[styles.input, isInputActive && styles.inputActive]}
-          value={inputValue}
-          onChangeText={setInputValue}
-          keyboardType="numeric"
-          placeholder={isInputActive ? "Введите очки" : ''}
-          placeholderTextColor="#8E8D8D"
-          editable={isInputActive}
-        />
-        {/*{error.length > 0 && <Text style={styles.errorText}>{error}</Text>}*/}
-        <SubmitButton onPress={handleSend} disabled={!isInputActive} />
-      </View>
-      {/*<View style={{ marginTop: 24 }}>*/}
-      {/*  <Text style={styles.legsTitle}>Live Updates:</Text>*/}
-      {/*  {messages.map((msg, idx) => (*/}
-      {/*    <Text key={idx} style={{ color: '#A6C4B3' }}>{msg}</Text>*/}
-      {/*  ))}*/}
-      {/*</View>*/}
-    </SafeAreaView>
+        <View style={styles.scoreBlock}>
+          <PlayerScoreCardGroup scorePlayer1={scorePlayer1} scorePlayer2={scorePlayer2}
+                                legsPlayer1={!!player1 && player1}
+                                legsPlayer2={!!player2 && player2} />
+        </View>
+
+        <View style={styles.legsBlock}>
+          <Text style={styles.legsTitle}>LEGS</Text>
+          <View style={styles.legsRow}>
+            <Text style={styles.legsPlayer}>Player 1 </Text>
+            <Text style={styles.legsScore}>1-0</Text>
+            <Text style={styles.legsScore}>3</Text>
+          </View>
+          <View style={styles.legsRow}>
+            <Text style={styles.legsPlayer}>Player 2 </Text>
+            <Text style={styles.legsScore}>0-1</Text>
+            <Text style={styles.legsScore}>0</Text>
+          </View>
+        </View>
+
+        <View style={styles.inputBlock}>
+          <Text style={styles.inputLabel}>Enter Throws</Text>
+          <TextInput
+            style={[styles.input, isInputActive && styles.inputActive]}
+            value={inputValue}
+            onChangeText={setInputValue}
+            keyboardType="numeric"
+            placeholder={isInputActive ? "Введите очки" : ""}
+            placeholderTextColor="#8E8D8D"
+            editable={isInputActive}
+          />
+          <SubmitButton onPress={handleSend} disabled={!isInputActive} />
+        </View>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -218,7 +223,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%"
-    // marginHorizontal: 24,
   },
   title: {
     fontSize: 32,
@@ -242,13 +246,11 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4
   },
-
   scoreBlock: {
     justifyContent: "center",
     borderRadius: 12,
     padding: 16,
     marginBottom: 16
-
   },
   playerRow1: {
     flexDirection: "row",
@@ -269,11 +271,9 @@ const styles = StyleSheet.create({
     color: "#FFFCEB",
     fontSize: 28,
     fontWeight: "bold"
-
   },
   legsBlock: {
     padding: 16,
-    // backgroundColor: '#012D24',
     borderRadius: 12,
     marginBottom: 16
   },
@@ -323,7 +323,6 @@ const styles = StyleSheet.create({
     color: "black",
     backgroundColor: "#F6F1DD"
   }
-
 });
 
 export default GameScreen;
