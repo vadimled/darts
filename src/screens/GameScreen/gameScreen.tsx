@@ -206,7 +206,7 @@ export const GameScreen: React.FC = () => {
             value={inputValue}
             onChangeText={setInputValue}
             keyboardType="numeric"
-            placeholder={isInputActive ? "Введите очки" : ""}
+            placeholder={isInputActive ? "Enter points" : ""}
             placeholderTextColor="#8E8D8D"
             editable={isInputActive}
           />
