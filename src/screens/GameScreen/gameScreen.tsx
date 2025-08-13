@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   Alert,
   Keyboard,
@@ -16,10 +16,11 @@ import { RootState } from "../../store";
 import { GameState, setGameState, setPlayer2 } from "../../store/gameSlice";
 import { PlayerScoreCardGroup } from "@screens/GameScreen/playerScoreCardGroup";
 import { SubmitButton } from "@screens/GameScreen/submitButton";
+import LegsBlock from "@screens/GameScreen/legsBlock";
 
 type SocketState = Socket<DefaultEventsMap, DefaultEventsMap> | null;
 
-export const GameScreen: React.FC = () => {
+export const GameScreen: FC = () => {
   const dispatch = useDispatch();
   const player1 = useSelector((state: RootState) => state.user.player1);
   const player2 = useSelector((state: RootState) => state.user.player2);
@@ -185,19 +186,7 @@ export const GameScreen: React.FC = () => {
                                 legsPlayer2={!!player2 && player2} />
         </View>
 
-        <View style={styles.legsBlock}>
-          <Text style={styles.legsTitle}>LEGS</Text>
-          <View style={styles.legsRow}>
-            <Text style={styles.legsPlayer}>Player 1 </Text>
-            <Text style={styles.legsScore}>1-0</Text>
-            <Text style={styles.legsScore}>3</Text>
-          </View>
-          <View style={styles.legsRow}>
-            <Text style={styles.legsPlayer}>Player 2 </Text>
-            <Text style={styles.legsScore}>0-1</Text>
-            <Text style={styles.legsScore}>0</Text>
-          </View>
-        </View>
+        <LegsBlock />
 
         <View style={styles.inputBlock}>
           <Text style={styles.inputLabel}>Enter Throws</Text>
@@ -271,30 +260,6 @@ const styles = StyleSheet.create({
     color: "#FFFCEB",
     fontSize: 28,
     fontWeight: "bold"
-  },
-  legsBlock: {
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16
-  },
-  legsTitle: {
-    color: "#A6C4B3",
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 8
-  },
-  legsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 6
-  },
-  legsPlayer: {
-    color: "#FFFCEB",
-    fontSize: 16
-  },
-  legsScore: {
-    color: "#FFFCEB",
-    fontSize: 16
   },
   inputBlock: {
     marginTop: 24,
