@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
+import { FINISH_SCORE } from "../../utils/constants";
 
 type PlayerScoreCardProps = {
   name: string;
@@ -11,7 +12,7 @@ export const PlayerScoreCard: React.FC<PlayerScoreCardProps> = ({ name, score, s
   return (
     <View style={[styles.card, style]}>
       <Text style={styles.name}>{name}</Text>
-      <Text style={styles.score}>{score}</Text>
+      <Text style={[styles.score, score <= FINISH_SCORE && styles.scoreFinish]}>{score}</Text>
     </View>
   );
 };
@@ -45,4 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#012D24',
     width: '100%'
   },
+  scoreFinish: {
+    color: '#e1c10c',
+  }
 });
