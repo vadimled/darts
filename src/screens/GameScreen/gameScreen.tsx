@@ -27,7 +27,7 @@ export const GameScreen: FC = () => {
   const { scorePlayer1, scorePlayer2, legsPlayer1, legsPlayer2 } = useSelector(
     (state: RootState) => state.user.gameState
   );
-
+  const [error, setError] = useState('');
   const [socket, setSocket] = useState<SocketState>(null);
   const [playersCount, setPlayersCount] = useState(1);
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
@@ -118,10 +118,11 @@ export const GameScreen: FC = () => {
 
   const handleSend = () => {
     const value = parseInt(inputValue, 10);
-    if (isNaN(value)) {
+    if (isNaN(value) || value < 0 || value > 180) {
+      setError('Must be between 0 and 180');
       return;
     }
-
+    setError('');
     let newScorePlayer1 = scorePlayer1;
     let newScorePlayer2 = scorePlayer2;
     let newCurrentPlayer = currentPlayer === player1 ? player2 : player1;
@@ -148,30 +149,6 @@ export const GameScreen: FC = () => {
   };
 
   const isInputActive = playersCount === 2 && currentPlayer === player1;
-  // const [score, setScore] = useState('');
-  // const [error, setError] = useState('');
-  // const [messages, setMessages] = useState<string[]>([]);
-  //
-  // useEffect(() => {
-  //   socket.on('score:received', (data: string) => {
-  //     setMessages(prev => [...prev, data]);
-  //   });
-  //
-  //   return () => {
-  //     socket.off('score:received');
-  //   };
-  // }, []);
-  //
-  // const handleSubmit = () => {
-  //   const numeric = parseInt(score, 10);
-  //   if (isNaN(numeric) || numeric < 0 || numeric > 180) {
-  //     setError('Must be between 0 and 180');
-  //     return;
-  //   }
-  //   setError('');
-  //   socket.emit('score:send', numeric);
-  //   setScore('');
-  // };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -181,25 +158,37 @@ export const GameScreen: FC = () => {
         </View>
 
         <View style={styles.scoreBlock}>
-          <PlayerScoreCardGroup scorePlayer1={scorePlayer1} scorePlayer2={scorePlayer2}
-                                legsPlayer1={!!player1 && player1}
-                                legsPlayer2={!!player2 && player2} />
+          <PlayerScoreCardGroup
+            scorePlayer1={scorePlayer1}
+            scorePlayer2={scorePlayer2}
+            legsPlayer1={!!player1 && player1}
+            legsPlayer2={!!player2 && player2}
+          />
         </View>
 
         <LegsBlock />
 
-        <View style={styles.inputBlock}>
+        <View style={styles.actionContainer}>
           <Text style={styles.inputLabel}>Enter Throws</Text>
-          <TextInput
-            style={[styles.input, isInputActive && styles.inputActive]}
-            value={inputValue}
-            onChangeText={setInputValue}
-            keyboardType="numeric"
-            placeholder={isInputActive ? 'Enter points' : ''}
-            placeholderTextColor="#8E8D8D"
-            editable={isInputActive}
-          />
-          <SubmitButton onPress={handleSend} disabled={!isInputActive} />
+          // JSX
+          <View style={styles.actionWrapper}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, isInputActive && styles.inputActive]}
+                value={inputValue}
+                onChangeText={setInputValue}
+                keyboardType="numeric"
+                placeholder={isInputActive ? 'Enter points' : ''}
+                placeholderTextColor="#8E8D8D"
+                editable={isInputActive}
+              />
+              <Text style={[styles.errorText, !error && styles.errorHidden]}>
+                {error || ' '}
+              </Text>
+            </View>
+
+            <SubmitButton onPress={handleSend} disabled={!isInputActive} />
+          </View>
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -261,33 +250,51 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold'
   },
-  inputBlock: {
+  actionContainer: {
+    width: '100%',
     marginTop: 24,
-    paddingHorizontal: 8
+    paddingHorizontal: 16,
+    justifyContent: 'flex-start'
   },
   inputLabel: {
     color: '#FFFCEB',
     fontSize: 16,
     marginBottom: 6
   },
+  actionWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    width: '100%',
+    justifyContent: 'space-between',
+  },
+  inputWrapper: {
+    flex: 3,
+    marginRight: 8,
+    flexDirection: 'column',
+    paddingBottom: 0
+  },
   input: {
-    height: 48,
+    minHeight: 42,
     backgroundColor: '#706f6f',
     borderRadius: 12,
     paddingHorizontal: 12,
     fontSize: 18,
-    color: '#333'
+    color: '#333',
   },
   errorText: {
-    color: 'red',
+    color: '#f41c1c',
     fontSize: 14,
+    lineHeight: 18,
+    minHeight: 18,
     marginTop: 4,
-    marginBottom: 12
+    marginBottom: 0,
+  },
+  errorHidden: {
+    opacity: 0,
   },
   inputActive: {
     color: 'black',
-    backgroundColor: '#F6F1DD'
-  }
-});
+    backgroundColor: '#F6F1DD',
+  },});
 
 export default GameScreen;
