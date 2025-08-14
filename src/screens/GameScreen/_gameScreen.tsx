@@ -1,19 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  SafeAreaView,
-  Alert,
-} from 'react-native';
-import io, {Socket} from 'socket.io-client';
-import {DefaultEventsMap} from '@socket.io/component-emitter';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../store';
-import {GameState, setGameState, setPlayer2} from '../../store/gameSlice';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import io, { Socket } from 'socket.io-client';
+import { DefaultEventsMap } from '@socket.io/component-emitter';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { GameState, setGameState, setPlayer2 } from '../../store/gameSlice';
 
 type SocketState = Socket<DefaultEventsMap, DefaultEventsMap> | null;
 
@@ -21,8 +12,8 @@ const GameScreen = () => {
   const dispatch = useDispatch();
   const player1 = useSelector((state: RootState) => state.user.player1);
   const player2 = useSelector((state: RootState) => state.user.player2);
-  const {scorePlayer1, scorePlayer2, legsPlayer1, legsPlayer2} = useSelector(
-    (state: RootState) => state.user.gameState,
+  const { scorePlayer1, scorePlayer2, legsPlayer1, legsPlayer2 } = useSelector(
+    (state: RootState) => state.user.gameState
   );
 
   const [socket, setSocket] = useState<SocketState>(null);
@@ -36,7 +27,7 @@ const GameScreen = () => {
 
     newSocket.on('connect', () => {
       console.log('Подключен к сокет серверу:', newSocket.id);
-      newSocket.emit('send_name', {name: player1});
+      newSocket.emit('send_name', { name: player1 });
     });
 
     newSocket.on('disconnect', () => {
@@ -74,8 +65,8 @@ const GameScreen = () => {
         `game_state_to_second_player: ${JSON.stringify(
           newState,
           null,
-          2,
-        )};  player1: ${player1};  `,
+          2
+        )};  player1: ${player1};  `
       );
 
       dispatch(setGameState(newState));
@@ -101,17 +92,17 @@ const GameScreen = () => {
   const analyzeRemainingPoints = () => {
     const maxStartedNumber = 182;
     const minDoubleNumber = 2;
-    if(scorePlayer1 > maxStartedNumber ) return;
+    if (scorePlayer1 > maxStartedNumber) return;
 
 
-  }
+  };
 
   const handleBust = () => {
     let newCurrentPlayer = currentPlayer === player1 ? player2 : player1;
     setCurrentPlayer(newCurrentPlayer || 'player1');
     dispatch(setGameState(currentStatus));
     socket?.emit('game_state', currentStatus);
-  }
+  };
 
   const handleSend = () => {
     const value = parseInt(inputValue, 10);
@@ -137,7 +128,7 @@ const GameScreen = () => {
       scorePlayer2: newScorePlayer2,
       legsPlayer1,
       legsPlayer2,
-      currentPlayer: newCurrentPlayer,
+      currentPlayer: newCurrentPlayer
     };
     setCurrentStatus(newState);
     dispatch(setGameState(newState));
@@ -160,7 +151,7 @@ const GameScreen = () => {
               style={[
                 styles.cell,
                 styles.playerName,
-                currentPlayer === player1 && styles.activePlayer,
+                currentPlayer === player1 && styles.activePlayer
               ]}>
               {!!player1 && player1}
             </Text>
@@ -172,7 +163,7 @@ const GameScreen = () => {
               style={[
                 styles.cell,
                 styles.playerName,
-                currentPlayer === player2 && styles.activePlayer,
+                currentPlayer === player2 && styles.activePlayer
               ]}>
               {!!player2 && player2}
             </Text>
@@ -198,32 +189,32 @@ const GameScreen = () => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1,
+    flex: 1
   },
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 16,
+    padding: 16
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#fff',
-    marginBottom: 16,
+    marginBottom: 16
   },
   table: {
     borderWidth: 1,
     borderColor: '#fff',
-    marginBottom: 16,
+    marginBottom: 16
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#333',
+    backgroundColor: '#333'
   },
   headerRow: {
-    backgroundColor: '#111',
+    backgroundColor: '#111'
   },
   cell: {
     flex: 1,
@@ -231,7 +222,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#fff',
     textAlign: 'center',
-    color: '#fff',
+    color: '#fff'
   },
   headerCell: {
     flex: 1,
@@ -240,17 +231,17 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     textAlign: 'center',
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   playerName: {
-    textAlign: 'left',
+    textAlign: 'left'
   },
   score: {
     backgroundColor: '#b22222',
-    color: '#fff',
+    color: '#fff'
   },
   activePlayer: {
-    color: 'red',
+    color: 'red'
   },
   input: {
     height: 40,
@@ -259,12 +250,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 8,
     color: '#fff',
-    backgroundColor: '#333',
+    backgroundColor: '#333'
   },
   inputActive: {
     color: 'black',
-    backgroundColor: '#ccc',
-  },
+    backgroundColor: '#ccc'
+  }
 });
 
 export default GameScreen;

@@ -1,7 +1,7 @@
-import React, {ReactElement} from 'react';
-import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ImageBackground, StyleSheet} from 'react-native';
+import React, { ReactElement } from 'react';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { ImageBackground, StyleSheet } from 'react-native';
 import DrawerNavigator from '@components/drawerNavigator/drawerNavigator';
 
 // Types for navigation
@@ -19,8 +19,8 @@ export const Darts = (): ReactElement => {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      background: 'transparent',
-    },
+      background: 'transparent'
+    }
   };
   const backgroundImage = require('./assets/background.png');
 
@@ -30,11 +30,11 @@ export const Darts = (): ReactElement => {
       source={backgroundImage}
       resizeMode="stretch">
       <NavigationContainer theme={MyTheme}>
-        <Stack.Navigator id={undefined} screenOptions={{headerShown: false}}>
+        <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }}>
           <Stack.Screen
             name="Drawer"
             component={DrawerNavigator}
-            options={{title: 'Menu'}}
+            options={{ title: 'Menu' }}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -45,24 +45,24 @@ export const Darts = (): ReactElement => {
 const styles = StyleSheet.create({
   sectionContainer: {
     marginTop: 32,
-    paddingHorizontal: 24,
+    paddingHorizontal: 24
   },
   sectionTitle: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: '600'
   },
   sectionDescription: {
     marginTop: 8,
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '400'
   },
   highlight: {
-    fontWeight: '700',
+    fontWeight: '700'
   },
   background: {
     flex: 1,
     resizeMode: 'cover',
-    justifyContent: 'center',
-  },
+    justifyContent: 'center'
+  }
 });
 

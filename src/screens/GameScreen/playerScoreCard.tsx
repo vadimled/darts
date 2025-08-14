@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import { FINISH_SCORE } from "../../utils/constants";
+import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { FINISH_SCORE } from '../../utils/constants';
 
 type PlayerScoreCardProps = {
   name: string;
@@ -30,13 +30,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
-    elevation: 8, // для Android
+    elevation: 8 // для Android
 
   },
   name: {
     fontSize: 24,
     color: '#FFFCEB',
-    marginBottom: 12,
+    marginBottom: 12
   },
   score: {
     textAlign: 'center',
@@ -47,6 +47,6 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   scoreFinish: {
-    color: '#e1c10c',
+    color: '#e1c10c'
   }
 });

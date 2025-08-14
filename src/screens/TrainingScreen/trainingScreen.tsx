@@ -1,18 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-} from 'react-native';
-import {useActions} from '../../store/hooks';
-import {useDispatch} from 'react-redux';
+import React, { useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useActions } from '../../store/hooks';
+import { useDispatch } from 'react-redux';
 
 const TrainingScreen = () => {
   const [receivedMessages, setReceivedMessages] = useState<string[]>([]); // Array of strings
-  const {setConnectionStatus} = useActions();
+  const { setConnectionStatus } = useActions();
   const dispatch = useDispatch();
 
   return (
@@ -46,7 +39,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     resizeMode: 'cover',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   container: {
     flex: 1,
@@ -54,17 +47,17 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: 'transparent',
     marginBottom: 80,
-    marginLeft: 30,
+    marginLeft: 30
   },
   inputContainer: {
     width: 'auto',
-    marginBottom: 10,
+    marginBottom: 10
   },
   label: {
     color: '#fff',
     marginBottom: 5,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '500'
   },
   input: {
     width: '100%',
@@ -74,7 +67,7 @@ const styles = StyleSheet.create({
     borderColor: '#e5e5e5',
     borderRadius: 5,
     backgroundColor: '#095851',
-    color: '#fff',
+    color: '#fff'
   },
   button: {
     width: '40%',
@@ -87,16 +80,16 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 5
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 });
 export default TrainingScreen;

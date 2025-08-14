@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { FC } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 interface Props {
 
@@ -30,24 +30,24 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   legsTitle: {
-    color: "#A6C4B3",
+    color: '#A6C4B3',
     fontSize: 18,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 8
   },
   legsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 6
   },
   legsPlayer: {
-    color: "#FFFCEB",
+    color: '#FFFCEB',
     fontSize: 16
   },
   legsScore: {
-    color: "#FFFCEB",
+    color: '#FFFCEB',
     fontSize: 16
-  },
+  }
 });
 
 export default LegsBlock;

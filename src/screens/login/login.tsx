@@ -1,16 +1,10 @@
-import React, {FC, useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  SafeAreaView,
-} from 'react-native';
-import {useDispatch} from 'react-redux';
-import {login} from '../../store/authSlice';
+import React, { FC, useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/authSlice';
 
-interface LoginFormProps {}
+interface LoginFormProps {
+}
 
 const Login: FC<LoginFormProps> = () => {
   const [username, setPlayer1] = useState('');
@@ -63,7 +57,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     resizeMode: 'cover',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   container: {
     flex: 1,
@@ -71,17 +65,17 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: 'transparent',
     marginBottom: 80,
-    marginLeft: 30,
+    marginLeft: 30
   },
   inputContainer: {
     width: '90%',
-    marginBottom: 10,
+    marginBottom: 10
   },
   label: {
     color: '#fff',
     marginBottom: 5,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '500'
   },
   input: {
     width: '100%',
@@ -91,7 +85,7 @@ const styles = StyleSheet.create({
     borderColor: '#e5e5e5',
     borderRadius: 5,
     backgroundColor: '#095851',
-    color: '#fff',
+    color: '#fff'
   },
   button: {
     width: '40%',
@@ -104,17 +98,17 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 5
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 });
 
 export default Login;

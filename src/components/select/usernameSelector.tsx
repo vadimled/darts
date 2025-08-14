@@ -1,5 +1,5 @@
 import React, { FC, useMemo, useState } from 'react';
-import { Modal, View, Text, StyleSheet, Button, Platform } from 'react-native';
+import { Button, Modal, Platform, StyleSheet, Text, View } from 'react-native';
 import RNPickerSelect, { PickerSelectProps } from 'react-native-picker-select';
 
 interface UsernameSelectorProps {
@@ -9,7 +9,7 @@ interface UsernameSelectorProps {
 
 const items: Array<{ label: string; value: string }> = [
   { label: 'Vadim', value: 'Vadim' },
-  { label: 'Ilya', value: 'Ilya' },
+  { label: 'Ilya', value: 'Ilya' }
 ];
 
 const UsernameSelector: FC<UsernameSelectorProps> = ({ isVisible, onSelect }) => {
@@ -25,22 +25,22 @@ const UsernameSelector: FC<UsernameSelectorProps> = ({ isVisible, onSelect }) =>
       // Расширим кликабельную область и дадим явные пропсы врапперу:
       touchableWrapperProps: {
         hitSlop: { top: 8, bottom: 8, left: 8, right: 8 },
-        testID: 'username-picker-trigger',
+        testID: 'username-picker-trigger'
       },
       style: {
         viewContainer: styles.viewContainer, // ширина 100%
         inputIOS: styles.inputIOS,
         inputAndroid: styles.inputAndroid,
         placeholder: styles.placeholder,
-        iconContainer: { right: 10, top: 16 },
+        iconContainer: { right: 10, top: 16 }
       },
       placeholder: {
         label: 'Select a username…',
         value: null,
-        color: 'gray',
+        color: 'gray'
       },
       doneText: 'Done',
-      openPickerOnMount: true,
+      openPickerOnMount: true
     }),
     [selectedValue]
   );
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 150,
+    paddingTop: 150
   },
   modalView: {
     width: '90%',
@@ -97,21 +97,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    gap: 12,
+    gap: 12
   },
   title: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '600'
   },
   viewContainer: {
-    width: '100%',
+    width: '100%'
   },
   // эти стили библиотека использует, когда РЕНДЕРИТ input сама
   inputIOS: {
-    display: 'none', // скрываем дефолтный input, т.к. используем children
+    display: 'none' // скрываем дефолтный input, т.к. используем children
   },
   inputAndroid: {
-    display: 'none',
+    display: 'none'
   },
   // наш видимый «инпут»-триггер
   fakeInput: {
@@ -121,25 +121,25 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 10,
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   },
   fakeInputText: {
     color: 'black',
-    fontSize: 16,
+    fontSize: 16
   },
   placeholder: {
     color: 'gray',
-    fontSize: 14,
+    fontSize: 14
   },
   selectedValue: {
     marginTop: 4,
     fontSize: 16,
-    color: 'blue',
+    color: 'blue'
   },
   actions: {
     marginTop: 8,
-    alignSelf: 'flex-end',
-  },
+    alignSelf: 'flex-end'
+  }
 });
 
 export default UsernameSelector;

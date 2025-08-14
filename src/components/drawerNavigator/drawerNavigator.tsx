@@ -15,22 +15,22 @@ const DrawerNavigator = () => {
         drawerType: 'slide',
         drawerPosition: 'left',
         drawerStyle: {
-          width: '75%',
+          width: '75%'
         },
         drawerActiveTintColor: '#e91e63',
         drawerInactiveTintColor: 'gray',
-        drawerItemStyle: {marginVertical: 5},
+        drawerItemStyle: { marginVertical: 5 }
       }}>
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen
         name="Game"
         component={GameScreen}
-        options={{title: 'Game'}}
+        options={{ title: 'Game' }}
       />
       <Drawer.Screen
         name="Training"
         component={TrainingScreen}
-        options={{title: 'Training'}}
+        options={{ title: 'Training' }}
       />
     </Drawer.Navigator>
   );
