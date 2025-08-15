@@ -189,14 +189,13 @@ export const GameScreen: FC = () => {
 
             <SubmitButton
               onPress={handleSend}
-              style={{ marginRight: 8 }}
               disabled={!isInputActive}
             />
 
             <SubmitButton
               onPress={handleBust}
               label="BUST"
-              style={!isInputActive ? styles.disabled : styles.button} // твои красные оттенки
+              style={!isInputActive ? styles.disabled : styles.button}
               disabled={!isInputActive}
             />
           </View>
@@ -274,45 +273,43 @@ const styles = StyleSheet.create({
   },
   actionWrapper: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
     width: '100%',
-    justifyContent: 'space-between',
+    gap: 8                    // RN 0.74+; если нельзя — см. marginRight на кнопке
   },
   inputWrapper: {
-    flexGrow: 3,
-    marginRight: 8,
+    flex: 3,                    // всё оставшееся место — под инпут
     flexDirection: 'column',
     paddingBottom: 0
   },
   input: {
-    minHeight: 42,
+    height: 42,
     backgroundColor: '#706f6f',
     borderRadius: 12,
     paddingHorizontal: 12,
     fontSize: 18,
-    color: '#333',
+    color: '#333'
   },
   errorText: {
-    color: '#f41c1c',
+    color: '#f77676',
     fontSize: 14,
     lineHeight: 18,
     minHeight: 18,
     marginTop: 4,
-    marginBottom: 0,
+    marginBottom: 0
   },
   errorHidden: {
-    opacity: 0,
+    opacity: 0
   },
   inputActive: {
     color: 'black',
-    backgroundColor: '#F6F1DD',
+    backgroundColor: '#F6F1DD'
   },
   button: {
-    backgroundColor: '#D96B5A',
+    backgroundColor: '#D96B5A'
   },
   disabled: {
     backgroundColor: '#73433B'
-  },
+  }
 });
 
 export default GameScreen;

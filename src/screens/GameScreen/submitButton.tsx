@@ -20,8 +20,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      // ВАЖНО: disabled-стиль раньше, внешний style — последним
-      style={[styles.button, disabled && styles.buttonDisabled, style]}
+      style={[styles.button, disabled && styles.buttonDisabled, style]} // внешний style — последним
     >
       <Text style={[styles.text, disabled && styles.textDisabled, textStyle]}>
         {label}
@@ -30,18 +29,22 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
   );
 };
 
+const BTN_WIDTH = 100; // можно подправить
+
 const styles = StyleSheet.create({
   button: {
-    flex: 1,
-    minWidth: 80,
+    flex:1,
+    maxWidth: BTN_WIDTH,
     height: 42,
-    backgroundColor: '#329566', // дефолт для SEND (enabled)
+    flexShrink: 0,                 // не даём кнопке сжиматься
+    backgroundColor: '#329566',    // дефолт для SEND
     borderRadius: 12,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: 12
   },
   buttonDisabled: {
-    backgroundColor: '#1F5135' // дефолт для SEND (disabled)
+    backgroundColor: '#1F5135'
   },
   text: {
     color: '#FFFCEB',
@@ -50,6 +53,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1
   },
   textDisabled: {
-    color: '#8FA79B' // приглушённый текст для disabled
+    color: '#8FA79B'
   }
 });
