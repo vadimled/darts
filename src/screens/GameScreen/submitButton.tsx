@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
 type SubmitButtonProps = {
   onPress: () => void;
   label?: string;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
 };
 
@@ -17,8 +17,15 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
   disabled = true
 }) => {
   return (
-    <TouchableOpacity style={[styles.button, disabled && styles.disabled, style]} onPress={onPress} disabled={disabled}>
-      <Text style={[styles.text, disabled && styles.disabled, textStyle]}>{label}</Text>
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={disabled}
+      // ВАЖНО: disabled-стиль раньше, внешний style — последним
+      style={[styles.button, disabled && styles.buttonDisabled, style]}
+    >
+      <Text style={[styles.text, disabled && styles.textDisabled, textStyle]}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -28,19 +35,21 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 80,
     height: 42,
-    backgroundColor: '#329566',
+    backgroundColor: '#329566', // дефолт для SEND (enabled)
     borderRadius: 12,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
-  disabled: {
-    backgroundColor: '#1F5135',
-    color: '#706f6f'
+  buttonDisabled: {
+    backgroundColor: '#1F5135' // дефолт для SEND (disabled)
   },
   text: {
     color: '#FFFCEB',
     fontWeight: 'bold',
     fontSize: 20,
     letterSpacing: 1
+  },
+  textDisabled: {
+    color: '#8FA79B' // приглушённый текст для disabled
   }
 });

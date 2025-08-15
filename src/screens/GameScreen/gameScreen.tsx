@@ -187,7 +187,18 @@ export const GameScreen: FC = () => {
               </Text>
             </View>
 
-            <SubmitButton onPress={handleSend} disabled={!isInputActive} />
+            <SubmitButton
+              onPress={handleSend}
+              style={{ marginRight: 8 }}
+              disabled={!isInputActive}
+            />
+
+            <SubmitButton
+              onPress={handleBust}
+              label="BUST"
+              style={!isInputActive ? styles.disabled : styles.button} // твои красные оттенки
+              disabled={!isInputActive}
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -268,7 +279,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   inputWrapper: {
-    flex: 3,
+    flexGrow: 3,
     marginRight: 8,
     flexDirection: 'column',
     paddingBottom: 0
@@ -295,6 +306,13 @@ const styles = StyleSheet.create({
   inputActive: {
     color: 'black',
     backgroundColor: '#F6F1DD',
-  },});
+  },
+  button: {
+    backgroundColor: '#D96B5A',
+  },
+  disabled: {
+    backgroundColor: '#73433B'
+  },
+});
 
 export default GameScreen;
