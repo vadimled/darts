@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Keyboard,
@@ -16,7 +16,8 @@ import { RootState } from '../../store';
 import { GameState, setGameState, setPlayer2 } from '../../store/gameSlice';
 import { PlayerScoreCardGroup } from '@screens/GameScreen/playerScoreCardGroup';
 import { SubmitButton } from '@screens/GameScreen/submitButton';
-import LegsBlock from '@screens/GameScreen/legsBlock';
+import LegsCard from '@screens/GameScreen/legsCard';
+import RoundResultModal from '@screens/GameScreen/roundResultModal';
 
 type SocketState = Socket<DefaultEventsMap, DefaultEventsMap> | null;
 
@@ -33,6 +34,8 @@ export const GameScreen: FC = () => {
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
   const [inputValue, setInputValue] = useState('');
   const [currentStatus, setCurrentStatus] = useState<GameState>({} as GameState);
+  const [isResultVisible, setIsResultVisible] = useState(false);
+  const [winnerName, setWinnerName] = useState<string>('');
 
   useEffect(() => {
     const newSocket = io('http://localhost:3000');
@@ -105,8 +108,6 @@ export const GameScreen: FC = () => {
     const maxStartedNumber = 182;
     const minDoubleNumber = 2;
     if (scorePlayer1 > maxStartedNumber) return;
-
-
   };
 
   const handleBust = () => {
@@ -137,8 +138,8 @@ export const GameScreen: FC = () => {
     setInputValue('');
 
     const newState: GameState = {
-      scorePlayer1: newScorePlayer1,
-      scorePlayer2: newScorePlayer2,
+      scorePlayer1: newScorePlayer1 < 0 ? 0 : newScorePlayer1,
+      scorePlayer2: newScorePlayer2 < 0 ? 0 : newScorePlayer2,
       legsPlayer1,
       legsPlayer2,
       currentPlayer: newCurrentPlayer
@@ -148,7 +149,52 @@ export const GameScreen: FC = () => {
     socket?.emit('game_state', newState);
   };
 
+  // запоминаем стартовые значения счёта, чтобы корректно сбрасывать
+  const initialScoresRef = useRef<{ p1: number; p2: number } | null>(null);
+  useEffect(() => {
+    if (!initialScoresRef.current) {
+      initialScoresRef.current = { p1: scorePlayer1, p2: scorePlayer2 };
+    }
+  }, [scorePlayer1, scorePlayer2]);
+
+  // следим за концом раунда
+  useEffect(() => {
+    if (scorePlayer1 === 0 || scorePlayer2 === 0) {
+      const winner = scorePlayer1 === 0 ? (player1 || 'Player 1') : (player2 || 'Player 2');
+      setWinnerName(winner);
+      setIsResultVisible(true);
+    }
+  }, [scorePlayer1, scorePlayer2, player1, player2]);
+
+  const handleContinueRound = () => {
+    const init = initialScoresRef.current ?? { p1: 301, p2: 301 }; // fallback если вдруг не успели зафиксировать
+    const p1Won = scorePlayer1 === 0;
+    const p2Won = scorePlayer2 === 0;
+
+    const nextState: GameState = {
+      scorePlayer1: init.p1,
+      scorePlayer2: init.p2,
+      // победителю +1 лег
+      legsPlayer1: legsPlayer1 + (p1Won ? 1 : 0),
+      legsPlayer2: legsPlayer2 + (p2Won ? 1 : 0),
+      // пусть следующий лег начинает победитель
+      currentPlayer: p1Won ? player1 : player2,
+    };
+
+    setIsResultVisible(false);
+    setInputValue('');
+    setError('');
+    setCurrentPlayer(nextState.currentPlayer || '');
+    setCurrentStatus(nextState);
+
+    dispatch(setGameState(nextState));
+    socket?.emit('game_state', nextState);
+  };
+
   const isInputActive = playersCount === 2 && currentPlayer === player1;
+  const isPlayerInputActive = isInputActive;
+  const hasActiveGame = scorePlayer1 > 0 && scorePlayer2 > 0;
+  const isBustButtonEnabled = !isPlayerInputActive && !hasActiveGame;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -166,11 +212,11 @@ export const GameScreen: FC = () => {
           />
         </View>
 
-        <LegsBlock />
+        <LegsCard />
+
 
         <View style={styles.actionContainer}>
           <Text style={styles.inputLabel}>Enter Throws</Text>
-          // JSX
           <View style={styles.actionWrapper}>
             <View style={styles.inputWrapper}>
               <TextInput
@@ -186,20 +232,17 @@ export const GameScreen: FC = () => {
                 {error || ' '}
               </Text>
             </View>
-
             <SubmitButton
               onPress={handleSend}
               disabled={!isInputActive}
             />
-
-            <SubmitButton
-              onPress={handleBust}
-              label="BUST"
-              style={!isInputActive ? styles.disabled : styles.button}
-              disabled={!isInputActive}
-            />
           </View>
         </View>
+        <RoundResultModal
+          visible={isResultVisible}
+          winner={winnerName}
+          onContinue={handleContinueRound}
+        />
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

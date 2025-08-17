@@ -41,6 +41,7 @@ const gameSlice = createSlice({
       state.player2 = undefined;
     },
     setGameState: (state, action: PayloadAction<GameState>) => {
+      console.log('-setGameState----->', action.payload);
       state.gameState = action.payload;
     }
   }
