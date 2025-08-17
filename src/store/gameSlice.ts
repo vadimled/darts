@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface GameState {
   scorePlayer1: number;
@@ -22,8 +22,8 @@ const initialState: GameSliceState = {
     scorePlayer2: 301,
     legsPlayer1: 0,
     legsPlayer2: 0,
-    currentPlayer: '',
-  },
+    currentPlayer: ''
+  }
 };
 
 const gameSlice = createSlice({
@@ -41,12 +41,13 @@ const gameSlice = createSlice({
       state.player2 = undefined;
     },
     setGameState: (state, action: PayloadAction<GameState>) => {
+      console.log('-setGameState----->', action.payload);
       state.gameState = action.payload;
-    },
-  },
+    }
+  }
 });
 
-export const {setPlayer1, setPlayer2, clearPlayers, setGameState} =
+export const { setPlayer1, setPlayer2, clearPlayers, setGameState } =
   gameSlice.actions;
 
 export const userSliceReducer = gameSlice.reducer;

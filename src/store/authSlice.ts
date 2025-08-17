@@ -1,4 +1,4 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 interface User {
   id: string;
@@ -26,10 +26,10 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     status: 'idle',
-    error: null,
+    error: null
   } as AuthState,
   reducers: {},
-  extraReducers: undefined,
+  extraReducers: undefined
 });
 
 export const authSliceAction = authSlice.actions;

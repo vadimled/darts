@@ -1,10 +1,10 @@
-import React, {FC, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../store';
-import {Text, StyleSheet, SafeAreaView} from 'react-native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackParamList} from '../../darts';
-import {setPlayer1} from '../../store/gameSlice';
+import React, { FC, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { SafeAreaView, StyleSheet, Text } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppStackParamList } from '../../darts';
+import { setPlayer1 } from '../../store/gameSlice';
 import UsernameSelector from '@components/select/usernameSelector';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
-    marginTop: 350,
+    marginTop: 350
   },
   label: {
     color: '#fff',
     marginBottom: 5,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '500'
   },
   button: {
     width: '40%',
@@ -62,17 +62,17 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 5
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 });
 
 export default HomeScreen;

@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
   isSomeoneConnected: boolean;
@@ -7,14 +7,14 @@ interface AuthState {
 const socketSlice = createSlice({
   name: 'socket',
   initialState: {
-    isSomeoneConnected: false,
+    isSomeoneConnected: false
   } as AuthState,
   reducers: {
     setConnectionStatus(state, action: PayloadAction<boolean>) {
       state.isSomeoneConnected = action.payload;
-    },
+    }
   },
-  extraReducers: undefined,
+  extraReducers: undefined
 });
 
 export const socketSliceAction = socketSlice.actions;

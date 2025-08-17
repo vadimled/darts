@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 const SOCKET_URL = 'http://localhost:3000';
 
 const socket = io(SOCKET_URL, {
-  transports: ['websocket'], // use WebSocket for connectivity
+  transports: ['websocket'] // use WebSocket for connectivity
 });
 
 export default socket;

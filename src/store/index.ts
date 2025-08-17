@@ -9,7 +9,7 @@ export const store = configureStore({
   reducer: {
     auth: authSliceReducer,
     user: userSliceReducer,
-    socket: socketSliceReducer,
+    socket: socketSliceReducer
   },
   enhancers: (getDefaultEnhancers) => {
     const reactotronEnhancer = __DEV__ ? [Reactotron.createEnhancer!()] : [];

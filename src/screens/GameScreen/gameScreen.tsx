@@ -1,42 +1,48 @@
-import React, {useState, useEffect} from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import {
-  View,
+  Alert,
+  Keyboard,
+  SafeAreaView,
+  StyleSheet,
   Text,
   TextInput,
-  Button,
-  StyleSheet,
-  SafeAreaView,
-  Alert,
+  TouchableWithoutFeedback,
+  View
 } from 'react-native';
-import io, {Socket} from 'socket.io-client';
-import {DefaultEventsMap} from '@socket.io/component-emitter';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../store';
-import {GameState, setGameState, setPlayer2} from '../../store/gameSlice';
-import {useDispatch} from 'react-redux';
+import io, { Socket } from 'socket.io-client';
+import { DefaultEventsMap } from '@socket.io/component-emitter';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { GameState, setGameState, setPlayer2 } from '../../store/gameSlice';
+import { PlayerScoreCardGroup } from '@screens/GameScreen/playerScoreCardGroup';
+import { SubmitButton } from '@screens/GameScreen/submitButton';
+import LegsCard from '@screens/GameScreen/legsCard';
+import RoundResultModal from '@screens/GameScreen/roundResultModal';
 
 type SocketState = Socket<DefaultEventsMap, DefaultEventsMap> | null;
 
-const GameScreen = () => {
+export const GameScreen: FC = () => {
   const dispatch = useDispatch();
   const player1 = useSelector((state: RootState) => state.user.player1);
   const player2 = useSelector((state: RootState) => state.user.player2);
-  const {scorePlayer1, scorePlayer2, legsPlayer1, legsPlayer2} = useSelector(
-    (state: RootState) => state.user.gameState,
+  const { scorePlayer1, scorePlayer2, legsPlayer1, legsPlayer2 } = useSelector(
+    (state: RootState) => state.user.gameState
   );
-
+  const [error, setError] = useState('');
   const [socket, setSocket] = useState<SocketState>(null);
   const [playersCount, setPlayersCount] = useState(1);
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
   const [inputValue, setInputValue] = useState('');
   const [currentStatus, setCurrentStatus] = useState<GameState>({} as GameState);
+  const [isResultVisible, setIsResultVisible] = useState(false);
+  const [winnerName, setWinnerName] = useState<string>('');
 
   useEffect(() => {
-    const newSocket = io('http://192.168.1.162:3000');
+    const newSocket = io('http://localhost:3000');
 
     newSocket.on('connect', () => {
       console.log('Подключен к сокет серверу:', newSocket.id);
-      newSocket.emit('send_name', {name: player1});
+      newSocket.emit('send_name', { name: player1 });
     });
 
     newSocket.on('disconnect', () => {
@@ -74,8 +80,8 @@ const GameScreen = () => {
         `game_state_to_second_player: ${JSON.stringify(
           newState,
           null,
-          2,
-        )};  player1: ${player1};  `,
+          2
+        )};  player1: ${player1};  `
       );
 
       dispatch(setGameState(newState));
@@ -101,24 +107,23 @@ const GameScreen = () => {
   const analyzeRemainingPoints = () => {
     const maxStartedNumber = 182;
     const minDoubleNumber = 2;
-    if(scorePlayer1 > maxStartedNumber ) return;
-
-
-  }
+    if (scorePlayer1 > maxStartedNumber) return;
+  };
 
   const handleBust = () => {
     let newCurrentPlayer = currentPlayer === player1 ? player2 : player1;
     setCurrentPlayer(newCurrentPlayer || 'player1');
     dispatch(setGameState(currentStatus));
     socket?.emit('game_state', currentStatus);
-  }
+  };
 
   const handleSend = () => {
     const value = parseInt(inputValue, 10);
-    if (isNaN(value)) {
+    if (isNaN(value) || value < 0 || value > 180) {
+      setError('Must be between 0 and 180');
       return;
     }
-
+    setError('');
     let newScorePlayer1 = scorePlayer1;
     let newScorePlayer2 = scorePlayer2;
     let newCurrentPlayer = currentPlayer === player1 ? player2 : player1;
@@ -133,138 +138,221 @@ const GameScreen = () => {
     setInputValue('');
 
     const newState: GameState = {
-      scorePlayer1: newScorePlayer1,
-      scorePlayer2: newScorePlayer2,
+      scorePlayer1: newScorePlayer1 < 0 ? 0 : newScorePlayer1,
+      scorePlayer2: newScorePlayer2 < 0 ? 0 : newScorePlayer2,
       legsPlayer1,
       legsPlayer2,
-      currentPlayer: newCurrentPlayer,
+      currentPlayer: newCurrentPlayer
     };
     setCurrentStatus(newState);
     dispatch(setGameState(newState));
     socket?.emit('game_state', newState);
   };
 
+  // запоминаем стартовые значения счёта, чтобы корректно сбрасывать
+  const initialScoresRef = useRef<{ p1: number; p2: number } | null>(null);
+  useEffect(() => {
+    if (!initialScoresRef.current) {
+      initialScoresRef.current = { p1: scorePlayer1, p2: scorePlayer2 };
+    }
+  }, [scorePlayer1, scorePlayer2]);
+
+  // следим за концом раунда
+  useEffect(() => {
+    if (scorePlayer1 === 0 || scorePlayer2 === 0) {
+      const winner = scorePlayer1 === 0 ? (player1 || 'Player 1') : (player2 || 'Player 2');
+      setWinnerName(winner);
+      setIsResultVisible(true);
+    }
+  }, [scorePlayer1, scorePlayer2, player1, player2]);
+
+  const handleContinueRound = () => {
+    const init = initialScoresRef.current ?? { p1: 301, p2: 301 }; // fallback если вдруг не успели зафиксировать
+    const p1Won = scorePlayer1 === 0;
+    const p2Won = scorePlayer2 === 0;
+
+    const nextState: GameState = {
+      scorePlayer1: init.p1,
+      scorePlayer2: init.p2,
+      // победителю +1 лег
+      legsPlayer1: legsPlayer1 + (p1Won ? 1 : 0),
+      legsPlayer2: legsPlayer2 + (p2Won ? 1 : 0),
+      // пусть следующий лег начинает победитель
+      currentPlayer: p1Won ? player1 : player2,
+    };
+
+    setIsResultVisible(false);
+    setInputValue('');
+    setError('');
+    setCurrentPlayer(nextState.currentPlayer || '');
+    setCurrentStatus(nextState);
+
+    dispatch(setGameState(nextState));
+    socket?.emit('game_state', nextState);
+  };
+
   const isInputActive = playersCount === 2 && currentPlayer === player1;
+  const isPlayerInputActive = isInputActive;
+  const hasActiveGame = scorePlayer1 > 0 && scorePlayer2 > 0;
+  const isBustButtonEnabled = !isPlayerInputActive && !hasActiveGame;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.title}>PREMIER LEAGUE FINAL</Text>
-        <View style={styles.table}>
-          <View style={[styles.row, styles.headerRow]}>
-            <Text style={styles.headerCell}>FIRST TO 11</Text>
-            <Text style={styles.headerCell}>LEGS</Text>
-          </View>
-          <View style={styles.row}>
-            <Text
-              style={[
-                styles.cell,
-                styles.playerName,
-                currentPlayer === player1 && styles.activePlayer,
-              ]}>
-              {!!player1 && player1}
-            </Text>
-            <Text style={[styles.cell, styles.score]}>{legsPlayer1}</Text>
-            <Text style={[styles.cell, styles.score]}>{scorePlayer1}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text
-              style={[
-                styles.cell,
-                styles.playerName,
-                currentPlayer === player2 && styles.activePlayer,
-              ]}>
-              {!!player2 && player2}
-            </Text>
-            <Text style={[styles.cell, styles.score]}>{legsPlayer2}</Text>
-            <Text style={[styles.cell, styles.score]}>{scorePlayer2}</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Game</Text>
+        </View>
+
+        <View style={styles.scoreBlock}>
+          <PlayerScoreCardGroup
+            scorePlayer1={scorePlayer1}
+            scorePlayer2={scorePlayer2}
+            legsPlayer1={!!player1 && player1}
+            legsPlayer2={!!player2 && player2}
+          />
+        </View>
+
+        <LegsCard />
+
+
+        <View style={styles.actionContainer}>
+          <Text style={styles.inputLabel}>Enter Throws</Text>
+          <View style={styles.actionWrapper}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, isInputActive && styles.inputActive]}
+                value={inputValue}
+                onChangeText={setInputValue}
+                keyboardType="numeric"
+                placeholder={isInputActive ? 'Enter points' : ''}
+                placeholderTextColor="#8E8D8D"
+                editable={isInputActive}
+              />
+              <Text style={[styles.errorText, !error && styles.errorHidden]}>
+                {error || ' '}
+              </Text>
+            </View>
+            <SubmitButton
+              onPress={handleSend}
+              disabled={!isInputActive}
+            />
           </View>
         </View>
-        <TextInput
-          style={[styles.input, isInputActive && styles.inputActive]}
-          value={inputValue}
-          onChangeText={setInputValue}
-          keyboardType="numeric"
-          placeholder="Введите очки"
-          placeholderTextColor="#8E8D8D"
-          editable={isInputActive}
+        <RoundResultModal
+          visible={isResultVisible}
+          winner={winnerName}
+          onContinue={handleContinueRound}
         />
-        <Button title="Send" onPress={handleSend} disabled={!isInputActive} />
-        <Button title="Bust" onPress={handleBust} disabled={!isInputActive} />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 16,
+    alignItems: 'center',
+    width: '100%'
   },
   title: {
-    fontSize: 18,
+    fontSize: 32,
     fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#fff',
-    marginBottom: 16,
+    color: '#FFFCEB',
+    textAlign: 'center'
   },
-  table: {
-    borderWidth: 1,
-    borderColor: '#fff',
-    marginBottom: 16,
+  headerContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    alignSelf: 'center',
+    marginBottom: 24
   },
-  row: {
+  headerText: {
+    color: '#FFFCEB',
+    fontSize: 32,
+    fontWeight: 'bold',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4
+  },
+  scoreBlock: {
+    justifyContent: 'center',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16
+  },
+  playerRow1: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#333',
+    marginBottom: 12,
+    backgroundColor: '#033e32'
   },
-  headerRow: {
-    backgroundColor: '#111',
-  },
-  cell: {
-    flex: 1,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#fff',
-    textAlign: 'center',
-    color: '#fff',
-  },
-  headerCell: {
-    flex: 1,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#fff',
-    textAlign: 'center',
-    color: '#fff',
-    fontWeight: 'bold',
+  playerRow2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12
   },
   playerName: {
-    textAlign: 'left',
+    color: '#A6C4B3',
+    fontSize: 20
   },
-  score: {
-    backgroundColor: '#b22222',
-    color: '#fff',
+  playerScore: {
+    color: '#FFFCEB',
+    fontSize: 28,
+    fontWeight: 'bold'
   },
-  activePlayer: {
-    color: 'red',
+  actionContainer: {
+    width: '100%',
+    marginTop: 24,
+    paddingHorizontal: 16,
+    justifyContent: 'flex-start'
+  },
+  inputLabel: {
+    color: '#FFFCEB',
+    fontSize: 16,
+    marginBottom: 6
+  },
+  actionWrapper: {
+    flexDirection: 'row',
+    width: '100%',
+    gap: 8                    // RN 0.74+; если нельзя — см. marginRight на кнопке
+  },
+  inputWrapper: {
+    flex: 3,                    // всё оставшееся место — под инпут
+    flexDirection: 'column',
+    paddingBottom: 0
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 16,
-    paddingHorizontal: 8,
-    color: '#fff',
-    backgroundColor: '#333',
+    height: 42,
+    backgroundColor: '#706f6f',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    fontSize: 18,
+    color: '#333'
+  },
+  errorText: {
+    color: '#f77676',
+    fontSize: 14,
+    lineHeight: 18,
+    minHeight: 18,
+    marginTop: 4,
+    marginBottom: 0
+  },
+  errorHidden: {
+    opacity: 0
   },
   inputActive: {
     color: 'black',
-    backgroundColor: '#ccc',
+    backgroundColor: '#F6F1DD'
   },
+  button: {
+    backgroundColor: '#D96B5A'
+  },
+  disabled: {
+    backgroundColor: '#73433B'
+  }
 });
 
 export default GameScreen;
